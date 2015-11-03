@@ -7,10 +7,6 @@ haxe:
 hxml:
   - build.hxml
 
-os:
-  - linux
-  - osx
-
 sudo: false
 addons:
   apt:
@@ -19,9 +15,8 @@ addons:
 
 before_install:
   - git clone https://github.com/andyli/pyextern.git ../pyextern
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-    sudo easy_install pip;
-    fi
   - pip install --user conda
   - conda env create -f environment.yml
+
+before_script:
   - source activate env
