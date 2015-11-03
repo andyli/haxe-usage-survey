@@ -3,7 +3,6 @@ import python.lib.Builtins.*;
 import python.lib.Codecs.encode;
 import pandas.*;
 import pandas.Pandas_Module as Pandas;
-import PyHelpers.*;
 using PyHelpers;
 using python.Lib;
 using Lambda;
@@ -17,13 +16,13 @@ class Main {
 	}
 
 	function load(dataPath:String):Void {
-		data = Pandas.read_csv(dataPath, kw(
+		data = Pandas.read_csv.call(
+			dataPath,
 			sep => "\t",
 			parse_dates => [0],
 			header => 0,
 			names => colNames.slice(0, -2)
-		));
-
+		);
 		Sys.println("number of records: " + len(data.index));
 
 		trace(data.head());
@@ -33,12 +32,13 @@ class Main {
 		// http://stackoverflow.com/questions/10993612/python-removing-xa0-from-string
 		sys.io.File.saveContent(dataPath, sys.io.File.getContent(dataPath).replace(chr(160), " "));
 
-		data = Pandas.read_csv(dataPath, kw(
+		data = Pandas.read_csv.call(
+			dataPath,
 			sep => "\t",
 			parse_dates => [0],
 			header => 0,
 			names => colNames
-		));
+		);
 
 		Sys.println("number of records: " + len(data.index));
 
@@ -48,10 +48,10 @@ class Main {
 
 		// Label the rows that email is duplicated as true (keep the last apperance as false).
 		// Ignore the entries with blank emails.
-		var duped:Series = untyped data.duplicated(kw(
+		var duped:Series = untyped data.duplicated.call(
 			subset => "email",
 			keep => "last"
-		)) & data.get("email").notnull();
+		) & data.get("email").notnull();
 
 		// Only retain the non-duplicated ones.
 		data = data.get(duped.__neg__());
@@ -59,10 +59,10 @@ class Main {
 		Sys.println("number of records (deduplicated): " + len(data.index));
 
 		// Remove columns that may contain personal data.
-		data.drop(kw(labels=>["email", "comment"], inplace=>true, axis=>1));
+		data.drop.call(labels=>["email", "comment"], inplace=>true, axis=>1);
 
 		var out_path = haxe.io.Path.withoutExtension(dataPath) + "_processed.tsv";
-		data.to_csv(kw(path_or_buf => out_path, sep => "\t", index=>false));
+		data.to_csv.call(path_or_buf => out_path, sep => "\t", index=>false);
 	}
 
 	static var colNames(default, never) = [
