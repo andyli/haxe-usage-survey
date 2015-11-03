@@ -18,4 +18,6 @@ addons:
 
 before_install:
   - git clone https://github.com/andyli/pyextern.git ../pyextern
-  - pip3 install -r requirements.txt
+  - pip3 install --user conda
+  - conda env create -f environment.yml
+  - source activate env
