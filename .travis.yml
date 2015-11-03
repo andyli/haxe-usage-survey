@@ -7,23 +7,21 @@ haxe:
 hxml:
   - build.hxml
 
-os: osx
+os:
+  - linux
+  - osx
 
-# sudo: required
-# dist: trusty
-
-# addons:
-#   apt:
-#     packages:
-#      - python3
-#      - python3-pip
+sudo: false
+addons:
+  apt:
+    packages:
+     - python-pip
 
 before_install:
   - git clone https://github.com/andyli/pyextern.git ../pyextern
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-    brew update;
-    brew install python3;
+    sudo easy_install pip;
     fi
-  - pip3 install --user conda
+  - pip install --user conda
   - conda env create -f environment.yml
   - source activate env
