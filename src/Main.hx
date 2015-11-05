@@ -26,80 +26,80 @@ using Reflect;
 }
 
 @:enum abstract Values(String) to String {
-	var v_pro_main = "_pro_main_";
-	var v_pro_occ = "_pro_occ_";
-	var v_use = "_use_";
-	var v_interested = "_interested_";
-	var v_uninterested = "_uninterested_";
-	var v_no_idea = "_no_idea_";
-	var v_game = "_game_";
-	var v_web_front = "_web_front_";
-	var v_web_back = "_web_back_";
-	var v_app_desktop = "_app_desktop_";
-	var v_app_mobile = "_app_mobile_";
-	var v_lib = "_lib_";
-	var v_hardware = "_hardware_";
-	var v_art = "_art_";
-	var v_not_sure = "_not_sure_";
-	var v_v3_2 = "_v3_2_";
-	var v_v3_1 = "_v3_1_";
-	var v_v3_0 = "_v3_0_";
-	var v_v2 = "_v2_";
-	var v_git = "_git_";
-	var v_swf = "_swf_";
-	var v_as3 = "_as3_";
-	var v_cpp = "_cpp_";
-	var v_java = "_java_";
-	var v_cs = "_cs_";
-	var v_js = "_js_";
-	var v_php = "_php_";
-	var v_python = "_python_";
-	var v_neko = "_neko_";
-	var v_interp = "_interp_";
-	var v_preinstall = "_preinstall_";
-	var v_official = "_official_";
-	var v_thirdparty = "_thirdparty_";
-	var v_brew = "_brew_";
-	var v_linux_package = "_linux_package_";
-	var v_choco = "_choco_";
-	var v_source = "_source_";
-	var v_package = "_package_";
-	var v_no_win = "_no_win_";
-	var v_win10 = "_win10_";
-	var v_win8 = "_win8_";
-	var v_win7 = "_win7_";
-	var v_winxp = "_winxp_";
-	var v_no_mac = "_no_mac_";
-	var v_mac1011 = "_mac1011_";
-	var v_mac1010 = "_mac1010_";
-	var v_mac1009 = "_mac1009_";
-	var v_mac1008 = "_mac1008_";
-	var v_no_linux = "_no_linux_";
-	var v_ubuntu = "_ubuntu_";
-	var v_debian = "_debian_";
-	var v_fedora = "_fedora_";
-	var v_opensuse = "_opensuse_";
-	var v_gentoo = "_gentoo_";
-	var v_mandriva = "_mandriva_";
-	var v_redhat = "_redhat_";
-	var v_oracle = "_oracle_";
-	var v_solaris = "_solaris_";
-	var v_turbolinux = "_turbolinux_";
-	var v_arch = "_arch_";
-	var v_freebsd = "_freebsd_";
-	var v_openbsd = "_openbsd_";
-	var v_netbsd = "_netbsd_";
-	var v_no_mobile = "_no_mobile_";
-	var v_android = "_android_";
-	var v_ios = "_ios_";
-	var v_windows = "_windows_";
-	var v_firefox = "_firefox_";
-	var v_tizen = "_tizen_";
-	var v_binary_archive = "_binary_archive_";
-	var v_mint = "_mint_";
-	var v_elementary = "_elementary_";
-	var v_blackberry = "_blackberry_";
-	var v_others = "_others_";
+	var v_pro_main = "pro_main";
+	var v_pro_occ = "pro_occ";
+	var v_use = "use";
+	var v_interested = "interested";
+	var v_uninterested = "uninterested";
+	var v_no_idea = "no_idea";
+	var v_game = "game";
+	var v_web_front = "web_front";
+	var v_web_back = "web_back";
+	var v_app_desktop = "app_desktop";
+	var v_app_mobile = "app_mobile";
+	var v_lib = "lib";
+	var v_hardware = "hardware";
+	var v_art = "art";
+	var v_not_sure = "not_sure";
+	var v_v3_2 = "v3_2";
+	var v_v3_1 = "v3_1";
+	var v_v3_0 = "v3_0";
+	var v_v2 = "v2";
+	var v_git = "git";
+	var v_swf = "swf";
+	var v_as3 = "as3";
+	var v_cpp = "cpp";
+	var v_java = "java";
+	var v_cs = "cs";
+	var v_js = "js";
+	var v_php = "php";
+	var v_python = "python";
+	var v_neko = "neko";
+	var v_interp = "interp";
+	var v_preinstall = "preinstall";
+	var v_official = "official";
+	var v_thirdparty = "thirdparty";
+	var v_brew = "brew";
+	var v_linux_package = "linux_package";
+	var v_choco = "choco";
+	var v_source = "source";
+	var v_package = "package";
+	var v_no_win = "no_win";
+	var v_win10 = "win10";
+	var v_win8 = "win8";
+	var v_win7 = "win7";
+	var v_winxp = "winxp";
+	var v_no_mac = "no_mac";
+	var v_mac1011 = "mac1011";
+	var v_mac1010 = "mac1010";
+	var v_mac1009 = "mac1009";
+	var v_mac1008 = "mac1008";
+	var v_no_linux = "no_linux";
+	var v_ubuntu = "ubuntu";
+	var v_debian = "debian";
+	var v_fedora = "fedora";
+	var v_opensuse = "opensuse";
+	var v_gentoo = "gentoo";
+	var v_mandriva = "mandriva";
+	var v_redhat = "redhat";
+	var v_oracle = "oracle";
+	var v_solaris = "solaris";
+	var v_turbolinux = "turbolinux";
+	var v_arch = "arch";
+	var v_freebsd = "freebsd";
+	var v_openbsd = "openbsd";
+	var v_netbsd = "netbsd";
+	var v_no_mobile = "no_mobile";
+	var v_android = "android";
+	var v_ios = "ios";
+	var v_windows = "windows";
+	var v_firefox = "firefox";
+	var v_tizen = "tizen";
+	var v_binary_archive = "binary_archive";
+	var v_mint = "mint";
+	var v_elementary = "elementary";
+	var v_blackberry = "blackberry";
+	var v_others = "others";
 }
 
 class Main extends mcli.CommandLine {
@@ -116,8 +116,7 @@ class Main extends mcli.CommandLine {
 			dataPath,
 			sep => "\t",
 			parse_dates => [0],
-			header => 0,
-			names => colNames.slice(0, -2)
+			header => 0
 		);
 		Sys.println("number of records: " + len(data.index));
 
@@ -179,6 +178,7 @@ class Main extends mcli.CommandLine {
 
 		/*
 			Rename values to their short forms.
+			And create extra columns for multiple selection values.
 		*/
 		renameValues();
 
@@ -196,29 +196,50 @@ class Main extends mcli.CommandLine {
 			var kvalues = [
 				for (k in values[name].keys())
 				for (v in values[name][k])
-				{k:k, v:v}
+				{k:k, v:v, data:[]}
 			];
-			kvalues.sort(function(a,b) return b.v.length - a.v.length);
+			var others = [];
+			kvalues.sort(function(a,b) {
+				var d = b.v.length - a.v.length;
+				return if (d != 0)
+					d;
+				else
+					Reflect.compare(a.v, b.v);
+			});
 			for (kv in list((data.get(name):Series).iteritems())) {
 				var idx = kv[0];
 				var item:String = kv[1];
 				var item_s = new Map();
-				for (kv in kvalues)
-				if (item.indexOf(kv.v) >= 0) {
-					item_s[kv.k] = kv.k;
-					item = item
-						.replace(kv.v + ", ", "")
-						.replace(kv.v, "");
+				for (kv in kvalues) {
+					var hasValue = item.indexOf(kv.v) >= 0;
+					if (hasValue) {
+						item_s[kv.k] = kv.k;
+						item = item
+							.replace(kv.v + ", ", "")
+							.replace(kv.v, "");
+					}
+					kv.data.push(hasValue);
 				}
-				if (item != "") {
+
+				var hasOther = item != "";
+				if (hasOther) {
 					Sys.println('other value: $name $item');
 					item_s[v_others] = v_others;
 				}
+				others.push(hasOther);
 
 				var items = item_s.array();
 				items.sort(Reflect.compare);
 				data.set_value(idx, name, items.join(","));
 			}
+
+			for (kv in kvalues) {
+				Syntax.arraySet(data, name + "_" + kv.k, new Series(kv.data, data.index));
+			}
+			if (numpy.Numpy.any(others)) {
+				Syntax.arraySet(data, name + "_others", new Series(others, data.index));
+			}
+			// data.drop.call(labels=>name, inplace=>true, axis=>1);
 		}
 	}
 
@@ -239,6 +260,10 @@ class Main extends mcli.CommandLine {
 	];
 
 	static public var privateCols(default, never) = [k_comment, k_email];
+	static public var multiSelectionCols(default, never) = [
+		k_create, k_version, k_target, k_install_haxe, k_install_pref,
+		k_os_win, k_os_mac, k_os_linux, k_os_mobile
+	];
 
 	static public var values(default, never) = [
 		k_exp => [
