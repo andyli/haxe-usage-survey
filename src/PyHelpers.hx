@@ -66,4 +66,9 @@ class IteratorAdaptor {
 	static public function iterator<T>(it:NativeIterator<T>)
 		return Lib.toHaxeIterator(it);
 }
+
+class DynamicIterationAdaptor {
+	static public function iterator<T>(it:Dynamic)
+		return Lib.toHaxeIterable(it).iterator();
+}
 #end

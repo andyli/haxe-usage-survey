@@ -1,0 +1,46 @@
+number of records: 361
+number of records (deduplicated): 355
+number of records (valid): 351
+other value: what transportation network and flow data processing
+other value: what databases
+other value: what online behavioural research software
+other value: what E-Learning
+other value: what Haxe tutorials and visulisations (think physics art)
+other value: what Smart TV Apps
+other value: what TV apps
+other value: what Video
+other value: what Tools
+other value: what cli tools
+other value: what Enterprise Apps
+other value: what test apps
+other value: what media server
+other value: what dev tools
+other value: what I had an interest in all of the above types of projects.
+other value: what Browser-based apps
+other value: what CLI tools for various tasks in tool chains
+other value: install_haxe npm
+other value: install_haxe Tried apt-get first, but that turned out to... not work properly
+other value: install_haxe Haven't obtained yet
+other value: install_pref nightly builds
+other value: install_pref haxelib
+other value: install_pref I'd prefer to use apt-gte if it works!
+other value: install_pref download a ZIP
+other value: install_pref xcopy deployment
+other value: os_win Plan to install  on some of my machines soon
+other value: os_win osx
+other value: os_win i do not want to use windows, linux ide problem
+other value: os_mac whichever is needed to build for osx/ios
+other value: os_mac 10.5
+other value: os_linux xubuntu
+other value: os_linux Mandrake
+other value: os_linux nixos
+other value: os_linux SteamOS
+other value: os_linux +  in Raspberry Pi
+other value: os_linux Raspbian
+other value: os_linux manjaro
+other value: os_linux KaOSx,Tanglu
+other value: os_linux puppy
+other value: os_linux nixos
+other value: os_mobile SailfishOS
+other value: os_mobile Ubuntu,Sailfish
+other value: os_mobile BlackBerry
