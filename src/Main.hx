@@ -9,6 +9,99 @@ using Lambda;
 using StringTools;
 using Reflect;
 
+@:enum abstract ColNames(String) to String {
+	var k_time = "time";                  // Timestamp
+	var k_exp = "exp";                    // Do you use Haxe?
+	var k_what = "what";                  // What are you creating, or want to use Haxe to create?
+	var k_version = "version";            // Which version(s) of Haxe are you using, or want to use / test?
+	var k_target = "target";              // Which Haxe targets are you using, or want to use / test?
+	var k_install_haxe = "install_haxe";  // How did you obtain Haxe?
+	var k_install_pref = "install_pref";  // Which is your preferred way to obtain development software (not necessarily Haxe)?
+	var k_os_win = "os_win";              // Which Windows version(s) do you use, or want to use, for Haxe development?
+	var k_os_mac = "os_mac";              // Which Mac version(s) do you use, or want to use, for Haxe development?
+	var k_os_linux = "os_linux";          // Which Linux / BSD distros(s) do you use, or want to use, for Haxe development?
+	var k_os_mobile = "os_mobile";        // Which mobile OS(es) do you use, or want to use, for Haxe development?
+	var k_comment = "comment";            // Anything else you want to tell me?
+	var k_email = "email";                // If you want to be notified when the survey result is ready, give me an email address
+}
+
+@:enum abstract Values(String) to String {
+	var v_pro_main = "_pro_main_";
+	var v_pro_occ = "_pro_occ_";
+	var v_use = "_use_";
+	var v_interested = "_interested_";
+	var v_uninterested = "_uninterested_";
+	var v_no_idea = "_no_idea_";
+	var v_game = "_game_";
+	var v_web_front = "_web_front_";
+	var v_web_back = "_web_back_";
+	var v_app_desktop = "_app_desktop_";
+	var v_app_mobile = "_app_mobile_";
+	var v_lib = "_lib_";
+	var v_hardware = "_hardware_";
+	var v_art = "_art_";
+	var v_not_sure = "_not_sure_";
+	var v_v3_2 = "_v3_2_";
+	var v_v3_1 = "_v3_1_";
+	var v_v3_0 = "_v3_0_";
+	var v_v2 = "_v2_";
+	var v_git = "_git_";
+	var v_swf = "_swf_";
+	var v_as3 = "_as3_";
+	var v_cpp = "_cpp_";
+	var v_java = "_java_";
+	var v_cs = "_cs_";
+	var v_js = "_js_";
+	var v_php = "_php_";
+	var v_python = "_python_";
+	var v_neko = "_neko_";
+	var v_interp = "_interp_";
+	var v_preinstall = "_preinstall_";
+	var v_official = "_official_";
+	var v_thirdparty = "_thirdparty_";
+	var v_brew = "_brew_";
+	var v_linux_package = "_linux_package_";
+	var v_choco = "_choco_";
+	var v_source = "_source_";
+	var v_package = "_package_";
+	var v_no_win = "_no_win_";
+	var v_win10 = "_win10_";
+	var v_win8 = "_win8_";
+	var v_win7 = "_win7_";
+	var v_winxp = "_winxp_";
+	var v_no_mac = "_no_mac_";
+	var v_mac1011 = "_mac1011_";
+	var v_mac1010 = "_mac1010_";
+	var v_mac1009 = "_mac1009_";
+	var v_mac1008 = "_mac1008_";
+	var v_no_linux = "_no_linux_";
+	var v_ubuntu = "_ubuntu_";
+	var v_debian = "_debian_";
+	var v_fedora = "_fedora_";
+	var v_opensuse = "_opensuse_";
+	var v_gentoo = "_gentoo_";
+	var v_mandriva = "_mandriva_";
+	var v_redhat = "_redhat_";
+	var v_oracle = "_oracle_";
+	var v_solaris = "_solaris_";
+	var v_turbolinux = "_turbolinux_";
+	var v_arch = "_arch_";
+	var v_freebsd = "_freebsd_";
+	var v_openbsd = "_openbsd_";
+	var v_netbsd = "_netbsd_";
+	var v_no_mobile = "_no_mobile_";
+	var v_android = "_android_";
+	var v_ios = "_ios_";
+	var v_windows = "_windows_";
+	var v_firefox = "_firefox_";
+	var v_tizen = "_tizen_";
+	var v_binary_archive = "_binary_archive_";
+	var v_mint = "_mint_";
+	var v_elementary = "_elementary_";
+	var v_blackberry = "_blackberry_";
+	var v_others = "_others_";
+}
+
 class Main extends mcli.CommandLine {
 	var data:DataFrame;
 
@@ -59,9 +152,9 @@ class Main extends mcli.CommandLine {
 		// Label the rows that email is duplicated as true (keep the last apperance as false).
 		// Ignore the entries with blank emails.
 		var duped:Series = untyped data.duplicated.call(
-			subset => "email",
+			subset => k_email,
 			keep => "last"
-		) & data.get("email").notnull();
+		) & data.get(k_email).notnull();
 
 		// Only retain the non-duplicated ones.
 		data = data.get(untyped ~duped);
@@ -74,15 +167,15 @@ class Main extends mcli.CommandLine {
 
 		data = data.get(untyped
 			~(
-				(data.get("exp") == values["exp"]["_uninterested_"]) |
-				(data.get("exp") == values["exp"]["_no_idea_"])
+				(data.get(k_exp) == values[k_exp][v_uninterested]) |
+				(data.get(k_exp) == values[k_exp][v_no_idea])
 			)
 		);
 
 		Sys.println("number of records (valid): " + len(data.index));
 
 		// Remove columns that may contain personal data.
-		data.drop.call(labels=>["email", "comment"], inplace=>true, axis=>1);
+		data.drop.call(labels=>[k_email, k_comment], inplace=>true, axis=>1);
 
 		/*
 			Rename values to their short forms.
@@ -101,7 +194,7 @@ class Main extends mcli.CommandLine {
 			for (kv in list((data.get(name):Series).iteritems())) {
 				var idx = kv[0];
 				var item:String = kv[1];
-				var item_s = new Map<String,String>();
+				var item_s = new Map();
 				var kvalues = [for (k in values[name].keys()) {k:k, v:values[name][k]}];
 				kvalues.sort(function(a,b) return b.v.length - a.v.length);
 				for (kv in kvalues) {
@@ -126,145 +219,147 @@ class Main extends mcli.CommandLine {
 				}
 				if (item != "") {
 					Sys.println('other value: $name $item');
-					item_s["others"] = "others";
+					item_s[v_others] = v_others;
 				}
 
-				data.set_value(idx, name, item_s.array().join(","));
+				var items = item_s.array();
+				items.sort(Reflect.compare);
+				data.set_value(idx, name, items.join(","));
 			}
 		}
 	}
 
 	static public var colNames(default, never) = [
-		"time",          // Timestamp
-		"exp",           // Do you use Haxe?
-		"what",          // What are you creating, or want to use Haxe to create?
-		"version",       // Which version(s) of Haxe are you using, or want to use / test?
-		"target",        // Which Haxe targets are you using, or want to use / test?
-		"install_haxe",  // How did you obtain Haxe?
-		"install_pref",  // Which is your preferred way to obtain development software (not necessarily Haxe)?
-		"os_win",        // Which Windows version(s) do you use, or want to use, for Haxe development?
-		"os_mac",        // Which Mac version(s) do you use, or want to use, for Haxe development?
-		"os_linux",      // Which Linux / BSD distros(s) do you use, or want to use, for Haxe development?
-		"os_mobile",     // Which mobile OS(es) do you use, or want to use, for Haxe development?
-		"comment",       // Anything else you want to tell me?
-		"email",         // If you want to be notified when the survey result is ready, give me an email address
+		k_time,          // Timestamp
+		k_exp,           // Do you use Haxe?
+		k_what,          // What are you creating, or want to use Haxe to create?
+		k_version,       // Which version(s) of Haxe are you using, or want to use / test?
+		k_target,        // Which Haxe targets are you using, or want to use / test?
+		k_install_haxe,  // How did you obtain Haxe?
+		k_install_pref,  // Which is your preferred way to obtain development software (not necessarily Haxe)?
+		k_os_win,        // Which Windows version(s) do you use, or want to use, for Haxe development?
+		k_os_mac,        // Which Mac version(s) do you use, or want to use, for Haxe development?
+		k_os_linux,      // Which Linux / BSD distros(s) do you use, or want to use, for Haxe development?
+		k_os_mobile,     // Which mobile OS(es) do you use, or want to use, for Haxe development?
+		k_comment,       // Anything else you want to tell me?
+		k_email,         // If you want to be notified when the survey result is ready, give me an email address
 	];
 
 	static public var values_other(default, never) = [
-		"what" => [
-			"_lib_" => ["JS modules (to be integrated in existing js ecosystem)"]
+		k_what => [
+			v_lib => ["JS modules (to be integrated in existing js ecosystem)"]
 		],
-		"install_haxe" => [
-			"_thirdparty_" => ["Use this one:https://github.com/jasononeil/OneLineHaxe", "Stencyl", "Hvm"],
-			"_linux_package_" => ["Arch Linux AUR"],
-			"_binary_archive_" => ["on linux by hand from compiled haxe/neko archuves", "nightly binaries", "linux binary packages / nightly builds", "nightly builds", "download a ZIP"],
+		k_install_haxe => [
+			v_thirdparty => ["Use this one:https://github.com/jasononeil/OneLineHaxe", "Stencyl", "Hvm"],
+			v_linux_package => ["Arch Linux AUR"],
+			v_binary_archive => ["on linux by hand from compiled haxe/neko archuves", "nightly binaries", "linux binary packages / nightly builds", "nightly builds", "download a ZIP"],
 		],
-		"install_pref" => [
-			"_package_" => ["npm", "brew", "Using official package manager to install official package"]
+		k_install_pref => [
+			v_package => ["npm", "brew", "Using official package manager to install official package"]
 		],
-		"os_linux" => [
-			"_mint_"       => ["Mint mate version", "Linux Mint", "Mint 17", "Mint", "mint"],
-			"_elementary_" => ["elementary OS"],
+		k_os_linux => [
+			v_mint       => ["Mint mate version", "Linux Mint", "Mint 17", "Mint", "mint"],
+			v_elementary => ["elementary OS"],
 		],
-		"os_mobile" => [
-			"_blackberry_" => ["Blackberry OS7", "Blackberry"],
+		k_os_mobile => [
+			v_blackberry => ["Blackberry OS7", "Blackberry"],
 		]
 	];
 
 	static public var values(default, never) = [
-		"exp" => [
-			"_pro_main_"     => "Haxe is one of the main tools I used for professional works.",
-			"_pro_occ_"      => "I use Haxe occasionally for professional works.",
-			"_use_"          => "I use Haxe but I'm not paid for that.",
-			"_interested_"   => "I do not use Haxe but I'm interested in using it.",
-			"_uninterested_" => "I do not use and I am not interested in using Haxe.",
-			"_no_idea_"      => "I do not know what is Haxe.",
+		k_exp => [
+			v_pro_main     => "Haxe is one of the main tools I used for professional works.",
+			v_pro_occ      => "I use Haxe occasionally for professional works.",
+			v_use          => "I use Haxe but I'm not paid for that.",
+			v_interested   => "I do not use Haxe but I'm interested in using it.",
+			v_uninterested => "I do not use and I am not interested in using Haxe.",
+			v_no_idea      => "I do not know what is Haxe.",
 		],
-		"what" => [
-			"_game_"        => "Games",
-			"_web_front_"   => "Web sites (front end)",
-			"_web_back_"    => "Web sites (back end)",
-			"_app_desktop_" => "Desktop applications",
-			"_app_mobile_"  => "Mobile applications",
-			"_lib_"         => "Software libraries / frameworks",
-			"_hardware_"    => "Hardware stuffs",
-			"_art_"         => "Art",
-			"_not_sure_"    => "I'm not sure yet.",
+		k_what => [
+			v_game        => "Games",
+			v_web_front   => "Web sites (front end)",
+			v_web_back    => "Web sites (back end)",
+			v_app_desktop => "Desktop applications",
+			v_app_mobile  => "Mobile applications",
+			v_lib         => "Software libraries / frameworks",
+			v_hardware    => "Hardware stuffs",
+			v_art         => "Art",
+			v_not_sure    => "I'm not sure yet.",
 		],
-		"version" => [
-			"_v3_2_"      => "3.2.*",
-			"_v3_1_"      => "3.1.*",
-			"_v3_0_"      => "3.0.*",
-			"_v2_"        => "2.*",
-			"_git_"       => "Git development build",
-			"_not_sure_"  => "I'm not sure.",
+		k_version => [
+			v_v3_2      => "3.2.*",
+			v_v3_1      => "3.1.*",
+			v_v3_0      => "3.0.*",
+			v_v2        => "2.*",
+			v_git       => "Git development build",
+			v_not_sure  => "I'm not sure.",
 		],
-		"target" => [
-			"_swf_"    => "Flash (SWF)",
-			"_as3_"    => "AS3 (source code)",
-			"_cpp_"    => "C++",
-			"_java_"   => "Java",
-			"_cs_"     => "C#",
-			"_js_"     => "JS",
-			"_php_"    => "PHP",
-			"_python_" => "Python",
-			"_neko_"   => "Neko",
-			"_interp_" => "compiler interpeter (--interp / --run)",
+		k_target => [
+			v_swf    => "Flash (SWF)",
+			v_as3    => "AS3 (source code)",
+			v_cpp    => "C++",
+			v_java   => "Java",
+			v_cs     => "C#",
+			v_js     => "JS",
+			v_php    => "PHP",
+			v_python => "Python",
+			v_neko   => "Neko",
+			v_interp => "compiler interpeter (--interp / --run)",
 		],
-		"install_haxe" => [
-			"_preinstall_"    => "It was pre-installed (e.g. on a customised VM / container image, or by IT staff of your company).",
-			"_official_"      => "Using the official installer provided in haxe.org / build.haxe.org.",
-			"_thirdparty_"    => "Using 3rd party installer / script (e.g. the OpenFL Linux install script, or the FlashDevelop Haxe management tool).",
-			"_brew_"          => "Homebrew",
-			"_linux_package_" => "Apt-get (including the use of PPA), yum, dnf, or any other Linux / BSD package manager.",
-			"_choco_"         => "Chocolatey",
-			"_source_"        => "Building from source.",
-			"_not_sure_"      => "Cannot remember...",
+		k_install_haxe => [
+			v_preinstall    => "It was pre-installed (e.g. on a customised VM / container image, or by IT staff of your company).",
+			v_official      => "Using the official installer provided in haxe.org / build.haxe.org.",
+			v_thirdparty    => "Using 3rd party installer / script (e.g. the OpenFL Linux install script, or the FlashDevelop Haxe management tool).",
+			v_brew          => "Homebrew",
+			v_linux_package => "Apt-get (including the use of PPA), yum, dnf, or any other Linux / BSD package manager.",
+			v_choco         => "Chocolatey",
+			v_source        => "Building from source.",
+			v_not_sure      => "Cannot remember...",
 		],
-		"install_pref" => [
-			"_preinstall_" => "It is pre-installed (e.g. on a customised VM / container image, or by IT support of your company).",
-			"_official_"   => "Using the official installer.",
-			"_package_"    => "Using a package manager (apt-get, homebrew, etc.).",
-			"_source_"     => "Building from source.",
+		k_install_pref => [
+			v_preinstall => "It is pre-installed (e.g. on a customised VM / container image, or by IT support of your company).",
+			v_official   => "Using the official installer.",
+			v_package    => "Using a package manager (apt-get, homebrew, etc.).",
+			v_source     => "Building from source.",
 		],
-		"os_win" => [
-			"_no_win_" => "I do not use Windows for Haxe development.",
-			"_win10_"  => "Windows 10",
-			"_win8_"   => "Windows 8 / 8.1",
-			"_win7_"   => "Windows 7",
-			"_winxp_"  => "Windows XP",
+		k_os_win => [
+			v_no_win => "I do not use Windows for Haxe development.",
+			v_win10  => "Windows 10",
+			v_win8   => "Windows 8 / 8.1",
+			v_win7   => "Windows 7",
+			v_winxp  => "Windows XP",
 		],
-		"os_mac" => [
-			"_no_mac_"  => "I do not use Mac for Haxe development.",
-			"_mac1011_" => 'OSX 10.11: "El Capitan"',
-			"_mac1010_" => 'OSX 10.10: "Yosemite"',
-			"_mac1009_" => 'OSX 10.9: "Mavericks"',
-			"_mac1008_" => 'OSX 10.8: "Mountain Lion"',
+		k_os_mac => [
+			v_no_mac  => "I do not use Mac for Haxe development.",
+			v_mac1011 => 'OSX 10.11: "El Capitan"',
+			v_mac1010 => 'OSX 10.10: "Yosemite"',
+			v_mac1009 => 'OSX 10.9: "Mavericks"',
+			v_mac1008 => 'OSX 10.8: "Mountain Lion"',
 		],
-		"os_linux" => [
-			"_no_linux_"   => "I do not use Linux / BSD for Haxe development.",
-			"_ubuntu_"     => "Ubuntu",
-			"_debian_"     => "Debian",
-			"_fedora_"     => "Fedora",
-			"_opensuse_"   => "openSUSE",
-			"_gentoo_"     => "Gentoo",
-			"_mandriva_"   => "Mandriva",
-			"_redhat_"     => "Red Hat",
-			"_oracle_"     => "Oracle",
-			"_solaris_"    => "Solaris",
-			"_turbolinux_" => "Turbolinux",
-			"_arch_"       => "Arch Linux",
-			"_freebsd_"    => "FreeBSD",
-			"_openbsd_"    => "OpenBSD",
-			"_netbsd_"     => "NetBSD",
+		k_os_linux => [
+			v_no_linux   => "I do not use Linux / BSD for Haxe development.",
+			v_ubuntu     => "Ubuntu",
+			v_debian     => "Debian",
+			v_fedora     => "Fedora",
+			v_opensuse   => "openSUSE",
+			v_gentoo     => "Gentoo",
+			v_mandriva   => "Mandriva",
+			v_redhat     => "Red Hat",
+			v_oracle     => "Oracle",
+			v_solaris    => "Solaris",
+			v_turbolinux => "Turbolinux",
+			v_arch       => "Arch Linux",
+			v_freebsd    => "FreeBSD",
+			v_openbsd    => "OpenBSD",
+			v_netbsd     => "NetBSD",
 		],
-		"os_mobile" => [
-			"_no_mobile_" => "I do not use mobile for Haxe development.",
-			"_android_"   => "Android",
-			"_ios_"       => "iOS",
-			"_windows_"   => "Windows",
-			"_firefox_"   => "Firefox OS",
-			"_tizen_"     => "Tizen",
+		k_os_mobile => [
+			v_no_mobile => "I do not use mobile for Haxe development.",
+			v_android   => "Android",
+			v_ios       => "iOS",
+			v_windows   => "Windows",
+			v_firefox   => "Firefox OS",
+			v_tizen     => "Tizen",
 		],
 	];
 
