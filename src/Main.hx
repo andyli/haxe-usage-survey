@@ -167,15 +167,15 @@ class Main extends mcli.CommandLine {
 
 		data = data.get(untyped
 			~(
-				(data.get(k_exp) == values[k_exp][v_uninterested]) |
-				(data.get(k_exp) == values[k_exp][v_no_idea])
+				(data.get(k_exp) == values[k_exp][v_uninterested][0]) |
+				(data.get(k_exp) == values[k_exp][v_no_idea][0])
 			)
 		);
 
 		Sys.println("number of records (valid): " + len(data.index));
 
 		// Remove columns that may contain personal data.
-		data.drop.call(labels=>[k_email, k_comment], inplace=>true, axis=>1);
+		data.drop.call(labels=>privateCols, inplace=>true, axis=>1);
 
 		/*
 			Rename values to their short forms.
@@ -190,32 +190,25 @@ class Main extends mcli.CommandLine {
 	}
 
 	function renameValues():Void {
-		for (name in colNames.slice(1, -2)) {
+		for (name in colNames)
+		if (values.exists(name))
+		{
+			var kvalues = [
+				for (k in values[name].keys())
+				for (v in values[name][k])
+				{k:k, v:v}
+			];
+			kvalues.sort(function(a,b) return b.v.length - a.v.length);
 			for (kv in list((data.get(name):Series).iteritems())) {
 				var idx = kv[0];
 				var item:String = kv[1];
 				var item_s = new Map();
-				var kvalues = [for (k in values[name].keys()) {k:k, v:values[name][k]}];
-				kvalues.sort(function(a,b) return b.v.length - a.v.length);
-				for (kv in kvalues) {
-					var value = kv.v;
-					if (item.indexOf(value) >= 0) {
-						item_s[kv.k] = kv.k;
-						item = item
-							.replace(value + ", ", "")
-							.replace(value, "");
-					}
-				}
-				if (values_other.exists(name)) {
-					var kvalues = [for (k in values_other[name].keys()) {k:k, v:values_other[name][k]}];
-					for (kv in kvalues)
-					for (value in kv.v)
-					if (item.indexOf(value) >= 0) {
-						item_s[kv.k] = kv.k;
-						item = item
-							.replace(value + ", ", "")
-							.replace(value, "");
-					}
+				for (kv in kvalues)
+				if (item.indexOf(kv.v) >= 0) {
+					item_s[kv.k] = kv.k;
+					item = item
+						.replace(kv.v + ", ", "")
+						.replace(kv.v, "");
 				}
 				if (item != "") {
 					Sys.println('other value: $name $item');
@@ -245,121 +238,106 @@ class Main extends mcli.CommandLine {
 		k_email,         // If you want to be notified when the survey result is ready, give me an email address
 	];
 
-	static public var values_other(default, never) = [
+	static public var privateCols(default, never) = [k_comment, k_email];
+
+	static public var values(default, never) = [
+		k_exp => [
+			v_pro_main     => ["Haxe is one of the main tools I used for professional works."],
+			v_pro_occ      => ["I use Haxe occasionally for professional works."],
+			v_use          => ["I use Haxe but I'm not paid for that."],
+			v_interested   => ["I do not use Haxe but I'm interested in using it."],
+			v_uninterested => ["I do not use and I am not interested in using Haxe."],
+			v_no_idea      => ["I do not know what is Haxe."],
+		],
 		k_create => [
-			v_lib => ["JS modules (to be integrated in existing js ecosystem)"]
+			v_game        => ["Games"],
+			v_web_front   => ["Web sites (front end)"],
+			v_web_back    => ["Web sites (back end)"],
+			v_app_desktop => ["Desktop applications"],
+			v_app_mobile  => ["Mobile applications"],
+			v_lib         => ["Software libraries / frameworks", "JS modules (to be integrated in existing js ecosystem)"],
+			v_hardware    => ["Hardware stuffs"],
+			v_art         => ["Art"],
+			v_not_sure    => ["I'm not sure yet."],
+		],
+		k_version => [
+			v_v3_2      => ["3.2.*"],
+			v_v3_1      => ["3.1.*"],
+			v_v3_0      => ["3.0.*"],
+			v_v2        => ["2.*"],
+			v_git       => ["Git development build"],
+			v_not_sure  => ["I'm not sure."],
+		],
+		k_target => [
+			v_swf    => ["Flash (SWF)"],
+			v_as3    => ["AS3 (source code)"],
+			v_cpp    => ["C++"],
+			v_java   => ["Java"],
+			v_cs     => ["C#"],
+			v_js     => ["JS"],
+			v_php    => ["PHP"],
+			v_python => ["Python"],
+			v_neko   => ["Neko"],
+			v_interp => ["compiler interpeter (--interp / --run)"],
 		],
 		k_install_haxe => [
-			v_thirdparty => ["Use this one:https://github.com/jasononeil/OneLineHaxe", "Stencyl", "Hvm"],
-			v_linux_package => ["Arch Linux AUR"],
+			v_preinstall     => ["It was pre-installed (e.g. on a customised VM / container image, or by IT staff of your company)."],
+			v_official       => ["Using the official installer provided in haxe.org / build.haxe.org."],
+			v_thirdparty     => ["Using 3rd party installer / script (e.g. the OpenFL Linux install script, or the FlashDevelop Haxe management tool).", "Use this one:https://github.com/jasononeil/OneLineHaxe", "Stencyl", "Hvm"],
+			v_brew           => ["Homebrew"],
+			v_linux_package  => ["Apt-get (including the use of PPA), yum, dnf, or any other Linux / BSD package manager.", "Arch Linux AUR"],
+			v_choco          => ["Chocolatey"],
+			v_source         => ["Building from source."],
 			v_binary_archive => ["on linux by hand from compiled haxe/neko archuves", "nightly binaries", "linux binary packages / nightly builds", "nightly builds", "download a ZIP"],
+			v_not_sure       => ["Cannot remember..."],
 		],
 		k_install_pref => [
-			v_package => ["npm", "brew", "Using official package manager to install official package"]
+			v_preinstall => ["It is pre-installed (e.g. on a customised VM / container image, or by IT support of your company)."],
+			v_official   => ["Using the official installer."],
+			v_package    => ["Using a package manager (apt-get, homebrew, etc.).", "npm", "brew", "Using official package manager to install official package"],
+			v_source     => ["Building from source."],
+		],
+		k_os_win => [
+			v_no_win => ["I do not use Windows for Haxe development."],
+			v_win10  => ["Windows 10"],
+			v_win8   => ["Windows 8 / 8.1"],
+			v_win7   => ["Windows 7"],
+			v_winxp  => ["Windows XP"],
+		],
+		k_os_mac => [
+			v_no_mac  => ["I do not use Mac for Haxe development."],
+			v_mac1011 => ['OSX 10.11: "El Capitan"'],
+			v_mac1010 => ['OSX 10.10: "Yosemite"'],
+			v_mac1009 => ['OSX 10.9: "Mavericks"'],
+			v_mac1008 => ['OSX 10.8: "Mountain Lion"'],
 		],
 		k_os_linux => [
+			v_no_linux   => ["I do not use Linux / BSD for Haxe development."],
+			v_ubuntu     => ["Ubuntu"],
+			v_debian     => ["Debian"],
+			v_fedora     => ["Fedora"],
+			v_opensuse   => ["openSUSE"],
+			v_gentoo     => ["Gentoo"],
+			v_mandriva   => ["Mandriva"],
+			v_redhat     => ["Red Hat"],
+			v_oracle     => ["Oracle"],
+			v_solaris    => ["Solaris"],
+			v_turbolinux => ["Turbolinux"],
+			v_arch       => ["Arch Linux"],
+			v_freebsd    => ["FreeBSD"],
+			v_openbsd    => ["OpenBSD"],
+			v_netbsd     => ["NetBSD"],
 			v_mint       => ["Mint mate version", "Linux Mint", "Mint 17", "Mint", "mint"],
 			v_elementary => ["elementary OS"],
 		],
 		k_os_mobile => [
+			v_no_mobile => ["I do not use mobile for Haxe development."],
+			v_android   => ["Android"],
+			v_ios       => ["iOS"],
+			v_windows   => ["Windows"],
+			v_firefox   => ["Firefox OS"],
+			v_tizen     => ["Tizen"],
 			v_blackberry => ["Blackberry OS7", "Blackberry"],
-		]
-	];
-
-	static public var values(default, never) = [
-		k_exp => [
-			v_pro_main     => "Haxe is one of the main tools I used for professional works.",
-			v_pro_occ      => "I use Haxe occasionally for professional works.",
-			v_use          => "I use Haxe but I'm not paid for that.",
-			v_interested   => "I do not use Haxe but I'm interested in using it.",
-			v_uninterested => "I do not use and I am not interested in using Haxe.",
-			v_no_idea      => "I do not know what is Haxe.",
-		],
-		k_create => [
-			v_game        => "Games",
-			v_web_front   => "Web sites (front end)",
-			v_web_back    => "Web sites (back end)",
-			v_app_desktop => "Desktop applications",
-			v_app_mobile  => "Mobile applications",
-			v_lib         => "Software libraries / frameworks",
-			v_hardware    => "Hardware stuffs",
-			v_art         => "Art",
-			v_not_sure    => "I'm not sure yet.",
-		],
-		k_version => [
-			v_v3_2      => "3.2.*",
-			v_v3_1      => "3.1.*",
-			v_v3_0      => "3.0.*",
-			v_v2        => "2.*",
-			v_git       => "Git development build",
-			v_not_sure  => "I'm not sure.",
-		],
-		k_target => [
-			v_swf    => "Flash (SWF)",
-			v_as3    => "AS3 (source code)",
-			v_cpp    => "C++",
-			v_java   => "Java",
-			v_cs     => "C#",
-			v_js     => "JS",
-			v_php    => "PHP",
-			v_python => "Python",
-			v_neko   => "Neko",
-			v_interp => "compiler interpeter (--interp / --run)",
-		],
-		k_install_haxe => [
-			v_preinstall    => "It was pre-installed (e.g. on a customised VM / container image, or by IT staff of your company).",
-			v_official      => "Using the official installer provided in haxe.org / build.haxe.org.",
-			v_thirdparty    => "Using 3rd party installer / script (e.g. the OpenFL Linux install script, or the FlashDevelop Haxe management tool).",
-			v_brew          => "Homebrew",
-			v_linux_package => "Apt-get (including the use of PPA), yum, dnf, or any other Linux / BSD package manager.",
-			v_choco         => "Chocolatey",
-			v_source        => "Building from source.",
-			v_not_sure      => "Cannot remember...",
-		],
-		k_install_pref => [
-			v_preinstall => "It is pre-installed (e.g. on a customised VM / container image, or by IT support of your company).",
-			v_official   => "Using the official installer.",
-			v_package    => "Using a package manager (apt-get, homebrew, etc.).",
-			v_source     => "Building from source.",
-		],
-		k_os_win => [
-			v_no_win => "I do not use Windows for Haxe development.",
-			v_win10  => "Windows 10",
-			v_win8   => "Windows 8 / 8.1",
-			v_win7   => "Windows 7",
-			v_winxp  => "Windows XP",
-		],
-		k_os_mac => [
-			v_no_mac  => "I do not use Mac for Haxe development.",
-			v_mac1011 => 'OSX 10.11: "El Capitan"',
-			v_mac1010 => 'OSX 10.10: "Yosemite"',
-			v_mac1009 => 'OSX 10.9: "Mavericks"',
-			v_mac1008 => 'OSX 10.8: "Mountain Lion"',
-		],
-		k_os_linux => [
-			v_no_linux   => "I do not use Linux / BSD for Haxe development.",
-			v_ubuntu     => "Ubuntu",
-			v_debian     => "Debian",
-			v_fedora     => "Fedora",
-			v_opensuse   => "openSUSE",
-			v_gentoo     => "Gentoo",
-			v_mandriva   => "Mandriva",
-			v_redhat     => "Red Hat",
-			v_oracle     => "Oracle",
-			v_solaris    => "Solaris",
-			v_turbolinux => "Turbolinux",
-			v_arch       => "Arch Linux",
-			v_freebsd    => "FreeBSD",
-			v_openbsd    => "OpenBSD",
-			v_netbsd     => "NetBSD",
-		],
-		k_os_mobile => [
-			v_no_mobile => "I do not use mobile for Haxe development.",
-			v_android   => "Android",
-			v_ios       => "iOS",
-			v_windows   => "Windows",
-			v_firefox   => "Firefox OS",
-			v_tizen     => "Tizen",
 		],
 	];
 
