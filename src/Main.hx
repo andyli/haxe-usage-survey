@@ -12,7 +12,7 @@ using Reflect;
 @:enum abstract ColNames(String) to String {
 	var k_time = "time";                  // Timestamp
 	var k_exp = "exp";                    // Do you use Haxe?
-	var k_what = "what";                  // What are you creating, or want to use Haxe to create?
+	var k_create = "create";              // What are you creating, or want to use Haxe to create?
 	var k_version = "version";            // Which version(s) of Haxe are you using, or want to use / test?
 	var k_target = "target";              // Which Haxe targets are you using, or want to use / test?
 	var k_install_haxe = "install_haxe";  // How did you obtain Haxe?
@@ -232,7 +232,7 @@ class Main extends mcli.CommandLine {
 	static public var colNames(default, never) = [
 		k_time,          // Timestamp
 		k_exp,           // Do you use Haxe?
-		k_what,          // What are you creating, or want to use Haxe to create?
+		k_create,        // What are you creating, or want to use Haxe to create?
 		k_version,       // Which version(s) of Haxe are you using, or want to use / test?
 		k_target,        // Which Haxe targets are you using, or want to use / test?
 		k_install_haxe,  // How did you obtain Haxe?
@@ -246,7 +246,7 @@ class Main extends mcli.CommandLine {
 	];
 
 	static public var values_other(default, never) = [
-		k_what => [
+		k_create => [
 			v_lib => ["JS modules (to be integrated in existing js ecosystem)"]
 		],
 		k_install_haxe => [
@@ -275,7 +275,7 @@ class Main extends mcli.CommandLine {
 			v_uninterested => "I do not use and I am not interested in using Haxe.",
 			v_no_idea      => "I do not know what is Haxe.",
 		],
-		k_what => [
+		k_create => [
 			v_game        => "Games",
 			v_web_front   => "Web sites (front end)",
 			v_web_back    => "Web sites (back end)",
