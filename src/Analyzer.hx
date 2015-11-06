@@ -22,6 +22,7 @@ class Analyzer {
 		var groups:Dict<String,Dynamic> = group.groups;
 		var groupKeys = [v_pro_main, v_pro_occ, v_use, v_interested];
 		var values = [for (k in groupKeys) len(groups.get(k))];
+		Plt.subplot();
 		Plt.axes.call(aspect=>1);
 		Plt.title.call(
 			Main.colQuestions[k_exp],
@@ -49,7 +50,44 @@ class Analyzer {
 		// 	labels => [for (k in groupKeys) Main.values[k_exp][k][0]],
 		// 	loc => "best"
 		// );
+		Plt.tight_layout();
 		Plt.savefig.call("out/fig_exp.png");
 		Plt.savefig.call("out/fig_exp.svg");
+	}
+
+	static public function analyzeCreate(data:DataFrame):Void {
+		var vnames = [v_game, v_web_front, v_web_back, v_app_desktop, v_app_mobile, v_lib, v_hardware, v_art, v_not_sure, v_others];
+		var values = [
+			for (vname in vnames)
+			data.get(k_create + "_" + vname).sum()
+		];
+		var df = new DataFrame(Lib.anonAsDict({
+			"what": [for (n in vnames) 
+				if (n == v_others)
+					"Others"
+				else
+					Main.values[k_create][n][0]
+			], 
+			"count": values,
+		}));
+		trace(df);
+		// data.get(k_create)
+		// var df = new 
+		var ax:matplotlib.axes.Axes = Plt.subplot();
+		Sns.barplot.call(
+			x => "count",
+			y => "what",
+			data => df,
+			color => "b"
+		);
+		ax.set.call(
+			title => Main.colQuestions[k_create],
+			ylabel => "",
+			xlabel => "count",
+			xlim => [0, len(data.index)]
+		);
+		Plt.tight_layout();
+		Plt.savefig.call("out/fig_create.png");
+		Plt.savefig.call("out/fig_create.svg");
 	}
 }
