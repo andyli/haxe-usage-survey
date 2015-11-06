@@ -105,7 +105,11 @@ using Reflect;
 class Main extends mcli.CommandLine {
 	var data:DataFrame;
 
-	function analyse():Void {
+	/**
+		Analyze the data and plot graphs.
+	*/
+	public function analyze():Void {
+		Analyzer.analyzeExp(data);
 	}
 
 	/**
@@ -119,8 +123,6 @@ class Main extends mcli.CommandLine {
 			header => 0
 		);
 		Sys.println("number of records: " + len(data.index));
-
-		trace(data.head());
 	}
 
 	/**
@@ -244,19 +246,34 @@ class Main extends mcli.CommandLine {
 	}
 
 	static public var colNames(default, never) = [
-		k_time,          // Timestamp
-		k_exp,           // Do you use Haxe?
-		k_create,        // What are you creating, or want to use Haxe to create?
-		k_version,       // Which version(s) of Haxe are you using, or want to use / test?
-		k_target,        // Which Haxe targets are you using, or want to use / test?
-		k_install_haxe,  // How did you obtain Haxe?
-		k_install_pref,  // Which is your preferred way to obtain development software (not necessarily Haxe)?
-		k_os_win,        // Which Windows version(s) do you use, or want to use, for Haxe development?
-		k_os_mac,        // Which Mac version(s) do you use, or want to use, for Haxe development?
-		k_os_linux,      // Which Linux / BSD distros(s) do you use, or want to use, for Haxe development?
-		k_os_mobile,     // Which mobile OS(es) do you use, or want to use, for Haxe development?
-		k_comment,       // Anything else you want to tell me?
-		k_email,         // If you want to be notified when the survey result is ready, give me an email address
+		k_time,
+		k_exp,
+		k_create,
+		k_version,
+		k_target,
+		k_install_haxe,
+		k_install_pref,
+		k_os_win,
+		k_os_mac,
+		k_os_linux,
+		k_os_mobile,
+		k_comment,
+		k_email,
+	];
+	static public var colQuestions(default, never) = [
+		k_time =>          "Timestamp",
+		k_exp =>           "Do you use Haxe?",
+		k_create =>        "What are you creating, or want to use Haxe to create?",
+		k_version =>       "Which version(s) of Haxe are you using, or want to use / test?",
+		k_target =>        "Which Haxe targets are you using, or want to use / test?",
+		k_install_haxe =>  "How did you obtain Haxe?",
+		k_install_pref =>  "Which is your preferred way to obtain development software (not necessarily Haxe)?",
+		k_os_win =>        "Which Windows version(s) do you use, or want to use, for Haxe development?",
+		k_os_mac =>        "Which Mac version(s) do you use, or want to use, for Haxe development?",
+		k_os_linux =>      "Which Linux / BSD distros(s) do you use, or want to use, for Haxe development?",
+		k_os_mobile =>     "Which mobile OS(es) do you use, or want to use, for Haxe development?",
+		k_comment =>       "Anything else you want to tell me?",
+		k_email =>         "If you want to be notified when the survey result is ready, give me an email address",
 	];
 
 	static public var privateCols(default, never) = [k_comment, k_email];
