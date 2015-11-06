@@ -111,6 +111,7 @@ class Main extends mcli.CommandLine {
 	public function analyze():Void {
 		Analyzer.analyzeExp(data);
 		Analyzer.analyzeCreate(data);
+		Analyzer.analyzeTarget(data);
 	}
 
 	/**
