@@ -68,15 +68,16 @@ class Analyzer {
 					Main.values[k_create][n][0]
 			]
 		}));
+		var total = len(data.index);
 		for (exp in expKeys) {
 			df.__setitem__(exp, [
 				for (vname in vnames)
-				data.get(data.get(k_exp) == exp).get(k_create + "_" + vname).sum()
+				data.get(data.get(k_exp) == exp).get(k_create + "_" + vname).sum() / total * 100
 			]);
 		}
 		df.__setitem__("total", [
 			for (vname in vnames)
-			data.get(k_create + "_" + vname).sum()
+			data.get(k_create + "_" + vname).sum() / total * 100
 		]);
 		trace(df);
 		Plt.figure();
@@ -97,8 +98,8 @@ class Analyzer {
 		}
 		ax.set.call(
 			ylabel => "",
-			xlabel => "Number of people",
-			xlim => [0, len(data.index)]
+			xlabel => "Percentage of respondents",
+			xlim => [0, 100]
 		);
 		ax.set_title.call(
 			Main.colQuestions[k_create],
@@ -128,15 +129,16 @@ class Analyzer {
 		var df = new DataFrame(Lib.anonAsDict({
 			"target": [for (n in vnames) Main.values[k_target][n][0]]
 		}));
+		var total = len(data.index);
 		for (exp in expKeys) {
 			df.__setitem__(exp, [
 				for (vname in vnames)
-				data.get(data.get(k_exp) == exp).get(k_target + "_" + vname).sum()
+				data.get(data.get(k_exp) == exp).get(k_target + "_" + vname).sum() / total * 100
 			]);
 		}
 		df.__setitem__("total", [
 			for (vname in vnames)
-			data.get(k_target + "_" + vname).sum()
+			data.get(k_target + "_" + vname).sum() / total * 100
 		]);
 		trace(df);
 		Plt.figure();
@@ -157,8 +159,8 @@ class Analyzer {
 		}
 		ax.set.call(
 			ylabel => "",
-			xlabel => "Number of people",
-			xlim => [0, len(data.index)]
+			xlabel => "Percentage of respondents",
+			xlim => [0, 100]
 		);
 		ax.set_title.call(
 			Main.colQuestions[k_target],
