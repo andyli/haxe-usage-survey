@@ -68,7 +68,7 @@ class Analyzer {
 			if (n == v_others)
 				"Others"
 			else
-				SurveyInfo.values[config.col][n][0]
+				(Textwrap.wrap(SurveyInfo.values[config.col][n][0], 40):Array<String>).join("\n")
 		]);
 		var df = new DataFrame(Lib.anonAsDict(dobj));
 		var total = len(data.index);
@@ -105,7 +105,7 @@ class Analyzer {
 			xlim => [0, 100]
 		);
 		ax.set_title.call(
-			SurveyInfo.colQuestions[config.col],
+			(Textwrap.wrap(SurveyInfo.colQuestions[config.col], 45):Array<String>).join("\n") + "\n(allow multiple selections)",
 			fontsize => "large"
 		);
 		var hl:Tuple<Dynamic> = ax.get_legend_handles_labels();
@@ -139,6 +139,30 @@ class Analyzer {
 		vnames.sort(function(a,b) return Std.int(data.get(k_target + "_" + b).sum()) - Std.int(data.get(k_target + "_" + a).sum()));
 		analyzeMCQuestion(data, {
 			col: k_target,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeVersion(data:DataFrame):Void {
+		var vnames = [v_v3_2, v_v3_1, v_v3_0, v_v2, v_git, v_not_sure];
+		analyzeMCQuestion(data, {
+			col: k_version,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeInstallHaxe(data:DataFrame):Void {
+		var vnames = [v_preinstall, v_official, v_thirdparty, v_brew, v_linux_package, v_choco, v_source, v_not_sure, v_others];
+		analyzeMCQuestion(data, {
+			col: k_install_haxe,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeInstallPref(data:DataFrame):Void {
+		var vnames = [v_preinstall, v_official, v_package, v_source, v_others];
+		analyzeMCQuestion(data, {
+			col: k_install_pref,
 			vnames: vnames
 		});
 	}

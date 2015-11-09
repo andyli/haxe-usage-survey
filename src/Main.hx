@@ -21,6 +21,9 @@ class Main extends mcli.CommandLine {
 		Analyzer.analyzeExp(data);
 		Analyzer.analyzeCreate(data);
 		Analyzer.analyzeTarget(data);
+		Analyzer.analyzeVersion(data);
+		Analyzer.analyzeInstallHaxe(data);
+		Analyzer.analyzeInstallPref(data);
 	}
 
 	/**
@@ -106,12 +109,12 @@ class Main extends mcli.CommandLine {
 		for (name in colNames)
 		if (values.exists(name))
 		{
+			var isMC = multiSelectionCols.indexOf(name) >= 0;
 			var kvalues = [
 				for (k in values[name].keys())
 				for (v in values[name][k])
-				{k:k, v:v, data:[]}
+				{k:k, v:v}
 			];
-			var others = [];
 			kvalues.sort(function(a,b) {
 				var d = b.v.length - a.v.length;
 				return if (d != 0)
@@ -119,6 +122,13 @@ class Main extends mcli.CommandLine {
 				else
 					Reflect.compare(a.v, b.v);
 			});
+			for (k in values[name].keys()) {
+				Syntax.arraySet(data, name + "_" + k, false);
+			}
+			if (isMC) {
+				Syntax.arraySet(data, name + "_" + v_others, false);
+			}
+			
 			for (kv in list((data.get(name):Series).iteritems())) {
 				var idx = kv[0];
 				var item:String = kv[1];
@@ -126,32 +136,30 @@ class Main extends mcli.CommandLine {
 				for (kv in kvalues) {
 					var hasValue = item.indexOf(kv.v) >= 0;
 					if (hasValue) {
+						data.set_value(idx, name + "_" + kv.k, true);
 						item_s[kv.k] = kv.k;
 						item = item
 							.replace(kv.v + ", ", "")
 							.replace(kv.v, "");
 					}
-					kv.data.push(hasValue);
 				}
 
 				var hasOther = item != "";
-				if (hasOther) {
-					Sys.println('other value: $name $item');
-					item_s[v_others] = v_others;
+				if (!isMC) {
+					if (hasOther) throw item;
+				} else {
+					if (hasOther) {
+						Sys.println('other value: $name $item');
+						item_s[v_others] = v_others;
+						data.set_value(idx, name + "_" + v_others, true);
+					}
 				}
-				others.push(hasOther);
 
 				var items = item_s.array();
 				items.sort(Reflect.compare);
 				data.set_value(idx, name, items.join(","));
 			}
 
-			for (kv in kvalues) {
-				Syntax.arraySet(data, name + "_" + kv.k, new Series(kv.data, data.index));
-			}
-			if (numpy.Numpy.any(others)) {
-				Syntax.arraySet(data, name + "_others", new Series(others, data.index));
-			}
 			// data.drop.call(labels=>name, inplace=>true, axis=>1);
 		}
 	}

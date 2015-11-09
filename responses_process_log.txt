@@ -19,7 +19,10 @@ other value: create I had an interest in all of the above types of projects.
 other value: create Browser-based apps
 other value: create CLI tools for various tasks in tool chains
 other value: install_haxe npm
+other value: install_haxe on linux by hand from compiled haxe/neko archuves
+other value: install_haxe nightly binaries
 other value: install_haxe Tried apt-get first, but that turned out to... not work properly
+other value: install_haxe linux binary packages / nightly builds
 other value: install_haxe Haven't obtained yet
 other value: install_pref nightly builds
 other value: install_pref haxelib

@@ -84,7 +84,6 @@
 	var v_windows = "windows";
 	var v_firefox = "firefox";
 	var v_tizen = "tizen";
-	var v_binary_archive = "binary_archive";
 	var v_mint = "mint";
 	var v_elementary = "elementary";
 	var v_blackberry = "blackberry";
@@ -177,7 +176,6 @@ class SurveyInfo {
 			v_linux_package  => ["Apt-get (including the use of PPA), yum, dnf, or any other Linux / BSD package manager.", "Arch Linux AUR"],
 			v_choco          => ["Chocolatey"],
 			v_source         => ["Building from source."],
-			v_binary_archive => ["on linux by hand from compiled haxe/neko archuves", "nightly binaries", "linux binary packages / nightly builds", "nightly builds", "download a ZIP"],
 			v_not_sure       => ["Cannot remember..."],
 		],
 		k_install_pref => [
