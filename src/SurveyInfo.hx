@@ -127,6 +127,10 @@ class SurveyInfo {
 		k_create, k_version, k_target, k_install_haxe, k_install_pref,
 		k_os_win, k_os_mac, k_os_linux, k_os_mobile
 	];
+	static public var allowOthersCols(default, never) = [
+		k_create, k_install_haxe, k_install_pref,
+		k_os_win, k_os_mac, k_os_linux, k_os_mobile
+	];
 
 	static public var values(default, never) = [
 		k_exp => [

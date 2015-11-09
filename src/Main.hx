@@ -102,6 +102,8 @@ class Main extends mcli.CommandLine {
 		*/
 		renameValues();
 
+		addExtraCols();
+
 		/*
 			Save it.
 		*/
@@ -109,11 +111,23 @@ class Main extends mcli.CommandLine {
 		data.to_csv.call(path_or_buf => out_path, sep => "\t", index=>false);
 	}
 
+	function addExtraCols():Void {
+		for (col in SurveyInfo.multiSelectionCols) {
+			var values = [for (v in values[col].keys()) v];
+			if (allowOthersCols.indexOf(col) >= 0)
+				values.push(v_others);
+			var count = [for (v in values) data.get(col + "_" + v)]
+				.fold(function(a, sum) return a + sum, 0);
+			data.__setitem__(col + "_count", count);
+		}
+	}
+
 	function renameValues():Void {
 		for (name in colNames)
 		if (values.exists(name))
 		{
 			var isMC = multiSelectionCols.indexOf(name) >= 0;
+			var allowOthers = allowOthersCols.indexOf(name) >= 0;
 			var kvalues = [
 				for (k in values[name].keys())
 				for (v in values[name][k])
@@ -129,7 +143,7 @@ class Main extends mcli.CommandLine {
 			for (k in values[name].keys()) {
 				Syntax.arraySet(data, name + "_" + k, false);
 			}
-			if (isMC) {
+			if (allowOthers) {
 				Syntax.arraySet(data, name + "_" + v_others, false);
 			}
 			
@@ -149,7 +163,7 @@ class Main extends mcli.CommandLine {
 				}
 
 				var hasOther = item != "";
-				if (!isMC) {
+				if (!allowOthers) {
 					if (hasOther) throw item;
 				} else {
 					if (hasOther) {
