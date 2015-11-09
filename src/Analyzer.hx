@@ -59,27 +59,28 @@ class Analyzer {
 		Plt.savefig.call("out/fig_exp.svg");
 	}
 
-	static public function analyzeCreate(data:DataFrame):Void {
-		var vnames = [v_game, v_web_front, v_web_back, v_app_desktop, v_app_mobile, v_lib, v_hardware, v_art, v_not_sure, v_others];
-		// vnames.sort(function(a,b) return Std.int(data.get(k_create + "_" + b).sum()) - Std.int(data.get(k_create + "_" + a).sum()));
-		var df = new DataFrame(Lib.anonAsDict({
-			"what": [for (n in vnames) 
-				if (n == v_others)
-					"Others"
-				else
-					SurveyInfo.values[k_create][n][0]
-			]
-		}));
+	static public function analyzeMCQuestion(data:DataFrame, config:{
+		col:ColNames,
+		vnames:Array<Values>
+	}):Void {
+		var dobj = {};
+		Reflect.setField(dobj, config.col, [for (n in config.vnames) 
+			if (n == v_others)
+				"Others"
+			else
+				SurveyInfo.values[config.col][n][0]
+		]);
+		var df = new DataFrame(Lib.anonAsDict(dobj));
 		var total = len(data.index);
 		for (exp in expKeys) {
 			df.__setitem__(exp, [
-				for (vname in vnames)
-				data.get(data.get(k_exp) == exp).get(k_create + "_" + vname).sum() / total * 100
+				for (vname in config.vnames)
+				data.get(data.get(k_exp) == exp).get(config.col + "_" + vname).sum() / total * 100
 			]);
 		}
 		df.__setitem__("total", [
-			for (vname in vnames)
-			data.get(k_create + "_" + vname).sum() / total * 100
+			for (vname in config.vnames)
+			data.get(config.col + "_" + vname).sum() / total * 100
 		]);
 		trace(df);
 		Plt.figure();
@@ -91,7 +92,7 @@ class Analyzer {
 					for (_i in 0...i+1)
 					df.get(expKeys[_i])
 				].fold(function(a,b) return a + b, 0),
-				y => "what",
+				y => config.col,
 				data => df,
 				color => expColors[i],
 				linewidth => 0,
@@ -104,7 +105,7 @@ class Analyzer {
 			xlim => [0, 100]
 		);
 		ax.set_title.call(
-			SurveyInfo.colQuestions[k_create],
+			SurveyInfo.colQuestions[config.col],
 			fontsize => "large"
 		);
 		var hl:Tuple<Dynamic> = ax.get_legend_handles_labels();
@@ -120,68 +121,25 @@ class Analyzer {
 		rect.set_edgecolor([1,1,1]);
 		rect.set_facecolor([1,1,1]);
 		Plt.tight_layout();
-		Plt.savefig.call("out/fig_create.png");
-		Plt.savefig.call("out/fig_create.svg");
+		Plt.savefig.call('out/fig_${config.col}.png');
+		Plt.savefig.call('out/fig_${config.col}.svg');
+	}
+
+	static public function analyzeCreate(data:DataFrame):Void {
+		var vnames = [v_game, v_web_front, v_web_back, v_app_desktop, v_app_mobile, v_lib, v_hardware, v_art, v_not_sure, v_others];
+		// vnames.sort(function(a,b) return Std.int(data.get(k_create + "_" + b).sum()) - Std.int(data.get(k_create + "_" + a).sum()));
+		analyzeMCQuestion(data, {
+			col: k_create,
+			vnames: vnames
+		});
 	}
 
 	static public function analyzeTarget(data:DataFrame):Void {
 		var vnames = [v_cpp, v_js, v_python, v_swf, v_as3, v_neko, v_java, v_cs, v_php, v_interp];
 		vnames.sort(function(a,b) return Std.int(data.get(k_target + "_" + b).sum()) - Std.int(data.get(k_target + "_" + a).sum()));
-
-		var df = new DataFrame(Lib.anonAsDict({
-			"target": [for (n in vnames) SurveyInfo.values[k_target][n][0]]
-		}));
-		var total = len(data.index);
-		for (exp in expKeys) {
-			df.__setitem__(exp, [
-				for (vname in vnames)
-				data.get(data.get(k_exp) == exp).get(k_target + "_" + vname).sum() / total * 100
-			]);
-		}
-		df.__setitem__("total", [
-			for (vname in vnames)
-			data.get(k_target + "_" + vname).sum() / total * 100
-		]);
-		trace(df);
-		Plt.figure();
-		var ax:matplotlib.axes.Axes = Plt.subplot();
-		for (i in 0...expKeys.length) {
-			var i = expKeys.length - i - 1;
-			Sns.barplot.call(
-				x => [
-					for (_i in 0...i+1)
-					df.get(expKeys[_i])
-				].fold(function(a,b) return a + b, 0),
-				y => "target",
-				data => df,
-				color => expColors[i],
-				linewidth => 0,
-				label => SurveyInfo.values[k_exp][expKeys[i]][0]
-			);
-		}
-		ax.set.call(
-			ylabel => "",
-			xlabel => "Percentage of respondents",
-			xlim => [0, 100]
-		);
-		ax.set_title.call(
-			SurveyInfo.colQuestions[k_target],
-			fontsize => "large"
-		);
-		var hl:Tuple<Dynamic> = ax.get_legend_handles_labels();
-		var legend = ax.legend.call(
-			untyped reversed(hl[0]),
-			untyped reversed(hl[1]),
-			loc => "lower right",
-			frameon => true,
-			framealpha => 0.8
-		);
-		var rect:matplotlib.patches.Rectangle = legend.get_frame();
-		rect.set_linewidth(1);
-		rect.set_edgecolor([1,1,1]);
-		rect.set_facecolor([1,1,1]);
-		Plt.tight_layout();
-		Plt.savefig.call("out/fig_target.png");
-		Plt.savefig.call("out/fig_target.svg");
+		analyzeMCQuestion(data, {
+			col: k_target,
+			vnames: vnames
+		});
 	}
 }
