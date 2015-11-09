@@ -5,6 +5,8 @@ import textwrap.*;
 import matplotlib.pyplot.Pyplot as Plt;
 import seaborn.Seaborn as Sns;
 import Main;
+import SurveyInfo;
+import SurveyInfo.*;
 using PyHelpers;
 using Lambda;
 
@@ -27,13 +29,13 @@ class Analyzer {
 		Plt.subplot();
 		Plt.axes.call(aspect=>1);
 		Plt.title.call(
-			Main.colQuestions[k_exp],
+			colQuestions[k_exp],
 			fontsize => "large"
 		);
 		Plt.pie.call(
 			values,
 			labels => [for (k in expKeys) {
-				var l = Main.values[k_exp][k][0];
+				var l = SurveyInfo.values[k_exp][k][0];
 				(Textwrap.wrap(l, 25):Array<String>).join("\n");
 			}],
 			labeldistance => 1.2,
@@ -65,7 +67,7 @@ class Analyzer {
 				if (n == v_others)
 					"Others"
 				else
-					Main.values[k_create][n][0]
+					SurveyInfo.values[k_create][n][0]
 			]
 		}));
 		var total = len(data.index);
@@ -93,7 +95,7 @@ class Analyzer {
 				data => df,
 				color => expColors[i],
 				linewidth => 0,
-				label => Main.values[k_exp][expKeys[i]][0]
+				label => SurveyInfo.values[k_exp][expKeys[i]][0]
 			);
 		}
 		ax.set.call(
@@ -102,7 +104,7 @@ class Analyzer {
 			xlim => [0, 100]
 		);
 		ax.set_title.call(
-			Main.colQuestions[k_create],
+			SurveyInfo.colQuestions[k_create],
 			fontsize => "large"
 		);
 		var hl:Tuple<Dynamic> = ax.get_legend_handles_labels();
@@ -127,7 +129,7 @@ class Analyzer {
 		vnames.sort(function(a,b) return Std.int(data.get(k_target + "_" + b).sum()) - Std.int(data.get(k_target + "_" + a).sum()));
 
 		var df = new DataFrame(Lib.anonAsDict({
-			"target": [for (n in vnames) Main.values[k_target][n][0]]
+			"target": [for (n in vnames) SurveyInfo.values[k_target][n][0]]
 		}));
 		var total = len(data.index);
 		for (exp in expKeys) {
@@ -154,7 +156,7 @@ class Analyzer {
 				data => df,
 				color => expColors[i],
 				linewidth => 0,
-				label => Main.values[k_exp][expKeys[i]][0]
+				label => SurveyInfo.values[k_exp][expKeys[i]][0]
 			);
 		}
 		ax.set.call(
@@ -163,7 +165,7 @@ class Analyzer {
 			xlim => [0, 100]
 		);
 		ax.set_title.call(
-			Main.colQuestions[k_target],
+			SurveyInfo.colQuestions[k_target],
 			fontsize => "large"
 		);
 		var hl:Tuple<Dynamic> = ax.get_legend_handles_labels();
