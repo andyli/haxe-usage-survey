@@ -82,7 +82,7 @@ class Analyzer {
 			for (vname in config.vnames)
 			data.get(config.col + "_" + vname).sum() / total * 100
 		]);
-		trace(df);
+		df.to_csv.call(path_or_buf => 'out/${config.col}.tsv', sep => "\t", index=>false);
 		Plt.figure();
 		var ax:matplotlib.axes.Axes = Plt.subplot();
 		for (i in 0...expKeys.length) {
@@ -163,6 +163,57 @@ class Analyzer {
 		var vnames = [v_preinstall, v_official, v_package, v_source, v_others];
 		analyzeMCQuestion(data, {
 			col: k_install_pref,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeOsWin(data:DataFrame):Void {
+		var vnames = [v_no_win, v_win10, v_win8, v_win7, v_winxp, v_others];
+		analyzeMCQuestion(data, {
+			col: k_os_win,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeOsMac(data:DataFrame):Void {
+		var vnames = [v_no_mac, v_mac1011, v_mac1010, v_mac1009, v_mac1008, v_others];
+		analyzeMCQuestion(data, {
+			col: k_os_mac,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeOsLinux(data:DataFrame):Void {
+		var vnames = [
+			v_no_linux,
+			v_ubuntu,
+			v_debian,
+			v_fedora,
+			v_opensuse,
+			v_gentoo,
+			v_mandriva,
+			v_redhat,
+			v_oracle,
+			v_solaris,
+			v_turbolinux,
+			v_arch,
+			v_freebsd,
+			v_openbsd,
+			v_netbsd,
+			v_mint,
+			v_elementary,
+			v_others,
+		];
+		analyzeMCQuestion(data, {
+			col: k_os_linux,
+			vnames: vnames
+		});
+	}
+
+	static public function analyzeOsMobile(data:DataFrame):Void {
+		var vnames = [v_no_mobile, v_android, v_ios, v_windows, v_firefox, v_tizen, v_blackberry, v_others];
+		analyzeMCQuestion(data, {
+			col: k_os_mobile,
 			vnames: vnames
 		});
 	}
