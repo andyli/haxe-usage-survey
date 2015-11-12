@@ -1,4 +1,4 @@
-@:enum abstract ColNames(String) to String {
+@:enum abstract ColName(String) to String {
 	var k_time = "time";                  // Timestamp
 	var k_exp = "exp";                    // Do you use Haxe?
 	var k_create = "create";              // What are you creating, or want to use Haxe to create?
@@ -14,7 +14,7 @@
 	var k_email = "email";                // If you want to be notified when the survey result is ready, give me an email address
 }
 
-@:enum abstract Values(String) to String {
+@:enum abstract Value(String) to String {
 	var v_pro_main = "pro_main";
 	var v_pro_occ = "pro_occ";
 	var v_use = "use";
@@ -132,6 +132,37 @@ class SurveyInfo {
 		k_os_win, k_os_mac, k_os_linux, k_os_mobile
 	];
 
+	static public var keys(default, never) = [
+		k_exp => [v_pro_main, v_pro_occ, v_use, v_interested],
+		k_create => [v_game, v_web_front, v_web_back, v_app_desktop, v_app_mobile, v_lib, v_hardware, v_art, v_not_sure, v_others],
+		k_target => [v_cpp, v_js, v_python, v_swf, v_as3, v_neko, v_java, v_cs, v_php, v_interp],
+		k_version => [v_v3_2, v_v3_1, v_v3_0, v_v2, v_git, v_not_sure],
+		k_install_haxe => [v_preinstall, v_official, v_thirdparty, v_brew, v_linux_package, v_choco, v_source, v_not_sure, v_others],
+		k_install_pref => [v_preinstall, v_official, v_package, v_source, v_others],
+		k_os_win => [v_no_win, v_win10, v_win8, v_win7, v_winxp, v_others],
+		k_os_mac => [v_no_mac, v_mac1011, v_mac1010, v_mac1009, v_mac1008, v_others],
+		k_os_linux => [
+			v_no_linux,
+			v_ubuntu,
+			v_debian,
+			v_fedora,
+			v_opensuse,
+			v_gentoo,
+			v_mandriva,
+			v_redhat,
+			v_oracle,
+			v_solaris,
+			v_turbolinux,
+			v_arch,
+			v_freebsd,
+			v_openbsd,
+			v_netbsd,
+			v_mint,
+			v_elementary,
+			v_others,
+		],
+		k_os_mobile => [v_no_mobile, v_android, v_ios, v_windows, v_firefox, v_tizen, v_blackberry, v_others],
+	];
 	static public var values(default, never) = [
 		k_exp => [
 			v_pro_main     => ["Haxe is one of the main tools I used for professional works."],

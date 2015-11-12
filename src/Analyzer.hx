@@ -19,12 +19,13 @@ class Analyzer {
 			return '$pc% ($val)';
 		}
 	}
-	static public var expKeys = [v_pro_main, v_pro_occ, v_use, v_interested];
-	static public var expColors = Sns.cubehelix_palette.call(expKeys.length, rot=>-.75, reverse=>true);
+	
+	static public var expColors = Sns.cubehelix_palette.call(SurveyInfo.keys[k_exp].length, rot=>-.75, reverse=>true);
 	static public function analyzeExp(data:DataFrame):Void {
 		var group:pandas.core.groupby.GroupBy = data.groupby(k_exp);
 		var groups:Dict<String,Dynamic> = group.groups;
-		var values = [for (k in expKeys) len(groups.get(k))];
+		var keys = SurveyInfo.keys[k_exp];
+		var values = [for (k in keys) len(groups.get(k))];
 		Plt.figure();
 		Plt.subplot();
 		Plt.axes.call(aspect=>1);
@@ -34,7 +35,7 @@ class Analyzer {
 		);
 		Plt.pie.call(
 			values,
-			labels => [for (k in expKeys) {
+			labels => [for (k in keys) {
 				var l = SurveyInfo.values[k_exp][k][0];
 				(Textwrap.wrap(l, 25):Array<String>).join("\n");
 			}],
@@ -51,7 +52,7 @@ class Analyzer {
 			})
 		);
 		// Plt.legend.call(
-		// 	labels => [for (k in expKeys) Main.values[k_exp][k][0]],
+		// 	labels => [for (k in keys) Main.values[k_exp][k][0]],
 		// 	loc => "best"
 		// );
 		Plt.tight_layout();
@@ -59,9 +60,17 @@ class Analyzer {
 		Plt.savefig.call("out/fig_exp.svg");
 	}
 
+	static public function analyzeNumberOfTargets(data:DataFrame):Void {
+		var df = new DataFrame({
+			targetCount: [for (c in 1...SurveyInfo.values[k_target].count()+1) c]
+		});
+	}
+
 	static public function analyzeMCQuestion(data:DataFrame, config:{
-		col:ColNames,
-		vnames:Array<Values>
+		col:ColName,
+		vnames:Array<Value>,
+		sub_col:ColName,
+		?sub_vnames:Array<Value>,
 	}):Void {
 		var dobj = {};
 		Reflect.setField(dobj, config.col, [for (n in config.vnames) 
@@ -72,10 +81,11 @@ class Analyzer {
 		]);
 		var df = new DataFrame(Lib.anonAsDict(dobj));
 		var total = len(data.index);
-		for (exp in expKeys) {
+		var keys = SurveyInfo.keys[config.sub_col];
+		for (exp in keys) {
 			df.__setitem__(exp, [
 				for (vname in config.vnames)
-				data.get(data.get(k_exp) == exp).get(config.col + "_" + vname).sum() / total * 100
+				data.get(data.get(config.sub_col) == exp).get(config.col + "_" + vname).sum() / total * 100
 			]);
 		}
 		df.__setitem__("total", [
@@ -85,18 +95,18 @@ class Analyzer {
 		df.to_csv.call(path_or_buf => 'out/${config.col}.tsv', sep => "\t", index=>false);
 		Plt.figure();
 		var ax:matplotlib.axes.Axes = Plt.subplot();
-		for (i in 0...expKeys.length) {
-			var i = expKeys.length - i - 1;
+		for (i in 0...keys.length) {
+			var i = keys.length - i - 1;
 			Sns.barplot.call(
 				x => [
 					for (_i in 0...i+1)
-					df.get(expKeys[_i])
+					df.get(keys[_i])
 				].fold(function(a,b) return a + b, 0),
 				y => config.col,
 				data => df,
 				color => expColors[i],
 				linewidth => 0,
-				label => SurveyInfo.values[k_exp][expKeys[i]][0]
+				label => SurveyInfo.values[config.sub_col][keys[i]][0]
 			);
 		}
 		ax.set.call(
@@ -126,95 +136,85 @@ class Analyzer {
 	}
 
 	static public function analyzeCreate(data:DataFrame):Void {
-		var vnames = [v_game, v_web_front, v_web_back, v_app_desktop, v_app_mobile, v_lib, v_hardware, v_art, v_not_sure, v_others];
+		var vnames = SurveyInfo.keys[k_create];
 		// vnames.sort(function(a,b) return Std.int(data.get(k_create + "_" + b).sum()) - Std.int(data.get(k_create + "_" + a).sum()));
 		analyzeMCQuestion(data, {
 			col: k_create,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeTarget(data:DataFrame):Void {
-		var vnames = [v_cpp, v_js, v_python, v_swf, v_as3, v_neko, v_java, v_cs, v_php, v_interp];
+		var vnames = SurveyInfo.keys[k_target];
 		vnames.sort(function(a,b) return Std.int(data.get(k_target + "_" + b).sum()) - Std.int(data.get(k_target + "_" + a).sum()));
 		analyzeMCQuestion(data, {
 			col: k_target,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeVersion(data:DataFrame):Void {
-		var vnames = [v_v3_2, v_v3_1, v_v3_0, v_v2, v_git, v_not_sure];
+		var vnames = SurveyInfo.keys[k_version];
 		analyzeMCQuestion(data, {
 			col: k_version,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeInstallHaxe(data:DataFrame):Void {
-		var vnames = [v_preinstall, v_official, v_thirdparty, v_brew, v_linux_package, v_choco, v_source, v_not_sure, v_others];
+		var vnames = SurveyInfo.keys[k_install_haxe];
 		analyzeMCQuestion(data, {
 			col: k_install_haxe,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeInstallPref(data:DataFrame):Void {
-		var vnames = [v_preinstall, v_official, v_package, v_source, v_others];
+		var vnames = SurveyInfo.keys[k_install_pref];
 		analyzeMCQuestion(data, {
 			col: k_install_pref,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeOsWin(data:DataFrame):Void {
-		var vnames = [v_no_win, v_win10, v_win8, v_win7, v_winxp, v_others];
+		var vnames = SurveyInfo.keys[k_os_win];
 		analyzeMCQuestion(data, {
 			col: k_os_win,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeOsMac(data:DataFrame):Void {
-		var vnames = [v_no_mac, v_mac1011, v_mac1010, v_mac1009, v_mac1008, v_others];
+		var vnames = SurveyInfo.keys[k_os_mac];
 		analyzeMCQuestion(data, {
 			col: k_os_mac,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeOsLinux(data:DataFrame):Void {
-		var vnames = [
-			v_no_linux,
-			v_ubuntu,
-			v_debian,
-			v_fedora,
-			v_opensuse,
-			v_gentoo,
-			v_mandriva,
-			v_redhat,
-			v_oracle,
-			v_solaris,
-			v_turbolinux,
-			v_arch,
-			v_freebsd,
-			v_openbsd,
-			v_netbsd,
-			v_mint,
-			v_elementary,
-			v_others,
-		];
+		var vnames = SurveyInfo.keys[k_os_linux];
 		analyzeMCQuestion(data, {
 			col: k_os_linux,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 
 	static public function analyzeOsMobile(data:DataFrame):Void {
-		var vnames = [v_no_mobile, v_android, v_ios, v_windows, v_firefox, v_tizen, v_blackberry, v_others];
+		var vnames = SurveyInfo.keys[k_os_mobile];
 		analyzeMCQuestion(data, {
 			col: k_os_mobile,
-			vnames: vnames
+			vnames: vnames,
+			sub_col: k_exp,
 		});
 	}
 }
