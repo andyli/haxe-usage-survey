@@ -132,12 +132,12 @@ class Analyzer {
 		for (exp in keys) {
 			df.__setitem__(exp, [
 				for (vname in config.vnames)
-				data.get(data.get(config.sub_col) == exp).get(config.col + "_" + vname).sum() / total * 100
+				data.get(data.get(config.sub_col) == exp).get(config.col + "_" + vname).sum()
 			]);
 		}
 		df.__setitem__("total", [
 			for (vname in config.vnames)
-			data.get(config.col + "_" + vname).sum() / total * 100
+			data.get(config.col + "_" + vname).sum()
 		]);
 		df.to_csv.call(path_or_buf => 'out/${config.col}.tsv', sep => "\t", index=>false);
 		Plt.figure();
@@ -162,8 +162,8 @@ class Analyzer {
 		}
 		ax.set.call(
 			ylabel => "",
-			xlabel => (config.xlabel != null ? config.xlabel : "Percentage of respondents"),
-			xlim => [0, 100]
+			xlabel => (config.xlabel != null ? config.xlabel : "Number of respondents"),
+			xlim => [0, total]
 		);
 		ax.set_title.call(
 			if (SurveyInfo.colQuestions.exists(config.col))
@@ -263,7 +263,7 @@ class Analyzer {
 			col: k_os_win,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using Windows for Haxe development"
+			xlabel: "Number of respondents who are interested in using Windows for Haxe development"
 		});
 	}
 
@@ -274,7 +274,7 @@ class Analyzer {
 			col: k_os_mac,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using Mac for Haxe development"
+			xlabel: "Number of respondents who are interested in using Mac for Haxe development"
 		});
 	}
 
@@ -285,7 +285,7 @@ class Analyzer {
 			col: k_os_linux,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using Linux for Haxe development"
+			xlabel: "Number of respondents who are interested in using Linux for Haxe development"
 		});
 	}
 
@@ -296,7 +296,7 @@ class Analyzer {
 			col: k_os_mobile,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using mobile OSes for Haxe development"
+			xlabel: "Number of respondents who are interested in using mobile OSes for Haxe development"
 		});
 	}
 }
