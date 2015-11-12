@@ -91,6 +91,7 @@ class Analyzer {
 		vnames:Array<Value>,
 		sub_col:ColName,
 		?sub_vnames:Array<Value>,
+		?xlabel:String
 	}):Void {
 		var dobj = {};
 		Reflect.setField(dobj, config.col, [for (n in config.vnames) 
@@ -131,7 +132,7 @@ class Analyzer {
 		}
 		ax.set.call(
 			ylabel => "",
-			xlabel => "Percentage of respondents",
+			xlabel => (config.xlabel != null ? config.xlabel : "Percentage of respondents"),
 			xlim => [0, 100]
 		);
 		ax.set_title.call(
@@ -204,37 +205,45 @@ class Analyzer {
 
 	static public function analyzeOsWin(data:DataFrame):Void {
 		var vnames = SurveyInfo.keys[k_os_win];
-		analyzeMCQuestion(data, {
+		vnames.remove(v_no_win);
+		analyzeMCQuestion(data.get(~data.get(k_os_win + "_" + v_no_win)), {
 			col: k_os_win,
 			vnames: vnames,
 			sub_col: k_exp,
+			xlabel: "Percentage of respondents who are interested in using Windows"
 		});
 	}
 
 	static public function analyzeOsMac(data:DataFrame):Void {
 		var vnames = SurveyInfo.keys[k_os_mac];
-		analyzeMCQuestion(data, {
+		vnames.remove(v_no_mac);
+		analyzeMCQuestion(data.get(~data.get(k_os_mac + "_" + v_no_mac)), {
 			col: k_os_mac,
 			vnames: vnames,
 			sub_col: k_exp,
+			xlabel: "Percentage of respondents who are interested in using Mac"
 		});
 	}
 
 	static public function analyzeOsLinux(data:DataFrame):Void {
 		var vnames = SurveyInfo.keys[k_os_linux];
-		analyzeMCQuestion(data, {
+		vnames.remove(v_no_linux);
+		analyzeMCQuestion(data.get(~data.get(k_os_linux + "_" + v_no_linux)), {
 			col: k_os_linux,
 			vnames: vnames,
 			sub_col: k_exp,
+			xlabel: "Percentage of respondents who are interested in using Linux"
 		});
 	}
 
 	static public function analyzeOsMobile(data:DataFrame):Void {
 		var vnames = SurveyInfo.keys[k_os_mobile];
-		analyzeMCQuestion(data, {
+		vnames.remove(v_no_mobile);
+		analyzeMCQuestion(data.get(~data.get(k_os_mobile + "_" + v_no_mobile)), {
 			col: k_os_mobile,
 			vnames: vnames,
 			sub_col: k_exp,
+			xlabel: "Percentage of respondents who are interested in using mobile OSes"
 		});
 	}
 }
