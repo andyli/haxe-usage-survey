@@ -24,6 +24,7 @@ class Main extends mcli.CommandLine {
 		Analyzer.analyzeVersion(data);
 		Analyzer.analyzeInstallHaxe(data);
 		Analyzer.analyzeInstallPref(data);
+		Analyzer.analyzeOs(data);
 		Analyzer.analyzeOsWin(data);
 		Analyzer.analyzeOsMac(data);
 		Analyzer.analyzeOsLinux(data);

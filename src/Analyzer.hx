@@ -89,16 +89,21 @@ class Analyzer {
 	static public function analyzeMCQuestion(data:DataFrame, config:{
 		col:ColName,
 		vnames:Array<Value>,
+		?vlabels:Array<String>,
 		sub_col:ColName,
 		?sub_vnames:Array<Value>,
-		?xlabel:String
+		?title:String,
+		?xlabel:String,
+		?wrapLegendLabel:Bool
 	}):Void {
 		var dobj = {};
-		Reflect.setField(dobj, config.col, [for (n in config.vnames) 
+		Reflect.setField(dobj, config.col, config.vlabels != null ? config.vlabels : [for (n in config.vnames) 
 			if (n == v_others)
 				"Others"
-			else
+			else if (SurveyInfo.values.exists(config.col))
 				(Textwrap.wrap(SurveyInfo.values[config.col][n][0], 40):Array<String>).join("\n")
+			else
+				n
 		]);
 		var df = new DataFrame(Lib.anonAsDict(dobj));
 		var total = len(data.index);
@@ -127,7 +132,11 @@ class Analyzer {
 				data => df,
 				color => expColors[i],
 				linewidth => 0,
-				label => SurveyInfo.values[config.sub_col][keys[i]][0]
+				label =>
+					if (config.wrapLegendLabel)
+						(Textwrap.wrap(SurveyInfo.values[config.sub_col][keys[i]][0], 30):Array<String>).join("\n")
+					else
+						SurveyInfo.values[config.sub_col][keys[i]][0]
 			);
 		}
 		ax.set.call(
@@ -136,7 +145,12 @@ class Analyzer {
 			xlim => [0, 100]
 		);
 		ax.set_title.call(
-			(Textwrap.wrap(SurveyInfo.colQuestions[config.col], 45):Array<String>).join("\n") + "\n(allow multiple selections)",
+			if (SurveyInfo.colQuestions.exists(config.col))
+				(Textwrap.wrap(SurveyInfo.colQuestions[config.col], 45):Array<String>).join("\n") + "\n(allow multiple selections)"
+			else if (config.title != null)
+				config.title
+			else
+				config.col,
 			fontsize => "large"
 		);
 		var hl:Tuple<Dynamic> = ax.get_legend_handles_labels();
@@ -200,6 +214,24 @@ class Analyzer {
 			col: k_install_pref,
 			vnames: vnames,
 			sub_col: k_exp,
+		});
+	}
+
+	static public function analyzeOs(data:DataFrame):Void {
+		data = data.copy();
+
+		data.__setitem__(k_os_win + "_use", ~data.get(k_os_win + "_" + v_no_win));
+		data.__setitem__(k_os_mac + "_use", ~data.get(k_os_mac + "_" + v_no_mac));
+		data.__setitem__(k_os_linux + "_use", ~data.get(k_os_linux + "_" + v_no_linux));
+		data.__setitem__(k_os_mobile + "_use", ~data.get(k_os_mobile + "_" + v_no_mobile));
+
+		analyzeMCQuestion(data, {
+			title: "Amount of interest in using given OS family for Haxe development.",
+			col: "os",
+			vnames: ["win_use", "mac_use", "linux_use", "mobile_use"],
+			vlabels: ["Windows", "Mac", "Linux/BSD", "Mobile OSes"],
+			sub_col: k_exp,
+			wrapLegendLabel: true
 		});
 	}
 
