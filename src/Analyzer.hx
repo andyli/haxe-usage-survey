@@ -39,6 +39,7 @@ class Analyzer {
 			col: k_target_count_grouped,
 			col_label: "Number of interested targets per respondents",
 			vnames: ["1", "2", "3", "4", "5", "6", "7+"],
+			vlabels: ["1 target", "2 targets", "3 targets", "4 targets", "5 targets", "6 targets", "7 or more targets"],
 			colors: Sns.color_palette("Blues", 7)
 		});
 	}
@@ -47,6 +48,7 @@ class Analyzer {
 		col:ColName,
 		?col_label:String,
 		?vnames:Array<Value>,
+		?vlabels:Array<String>,
 		?colors:Dynamic
 	}):Void {
 		var group:pandas.core.groupby.GroupBy = data.groupby(config.col);
@@ -62,13 +64,15 @@ class Analyzer {
 		);
 		Plt.pie.call(
 			values,
-			labels => [for (k in vnames) {
+			labels => (config.vlabels != null ? config.vlabels : [for (k in vnames) {
 				var l = if (SurveyInfo.values.exists(config.col))
 					SurveyInfo.values[config.col][k][0];
 				else
 					Std.string(k);
 				(Textwrap.wrap(l, 25):Array<String>).join("\n");
-			}],
+			}]),
+			startangle => 180,
+			counterclock => false,
 			labeldistance => 1.2,
 			autopct => make_autopct(values),
 			pctdistance => 0.7,
@@ -242,7 +246,7 @@ class Analyzer {
 			col: k_os_win,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using Windows"
+			xlabel: "Percentage of respondents who are interested in using Windows for Haxe development"
 		});
 	}
 
@@ -253,7 +257,7 @@ class Analyzer {
 			col: k_os_mac,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using Mac"
+			xlabel: "Percentage of respondents who are interested in using Mac for Haxe development"
 		});
 	}
 
@@ -264,7 +268,7 @@ class Analyzer {
 			col: k_os_linux,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using Linux"
+			xlabel: "Percentage of respondents who are interested in using Linux for Haxe development"
 		});
 	}
 
@@ -275,7 +279,7 @@ class Analyzer {
 			col: k_os_mobile,
 			vnames: vnames,
 			sub_col: k_exp,
-			xlabel: "Percentage of respondents who are interested in using mobile OSes"
+			xlabel: "Percentage of respondents who are interested in using mobile OSes for Haxe development"
 		});
 	}
 }
