@@ -22,27 +22,57 @@ class Analyzer {
 	
 	static public var expColors = Sns.cubehelix_palette.call(SurveyInfo.keys[k_exp].length, rot=>-.75, reverse=>true);
 	static public function analyzeExp(data:DataFrame):Void {
-		var group:pandas.core.groupby.GroupBy = data.groupby(k_exp);
+		analyzeSCQuestion(data, {
+			col: k_exp,
+			colors: expColors
+		});
+	}
+
+	static public function analyzeTargetCount(data:DataFrame):Void {
+		data = data.copy();
+		var k_target_count = k_target + "_count";
+		var k_target_count_grouped = k_target_count + "_grouped";
+		data.__setitem__(k_target_count_grouped, data.get(k_target_count).astype(str));
+		data.at.__setitem__(python.Tuple.Tuple2.make(data.get(k_target_count) >= 7, k_target_count_grouped), "7+");
+
+		analyzeSCQuestion(data, {
+			col: k_target_count_grouped,
+			col_label: "Number of interested targets per respondents",
+			vnames: ["1", "2", "3", "4", "5", "6", "7+"],
+			colors: Sns.color_palette("Blues", 7)
+		});
+	}
+
+	static public function analyzeSCQuestion(data:DataFrame, config:{
+		col:ColName,
+		?col_label:String,
+		?vnames:Array<Value>,
+		?colors:Dynamic
+	}):Void {
+		var group:pandas.core.groupby.GroupBy = data.groupby(config.col);
 		var groups:Dict<String,Dynamic> = group.groups;
-		var keys = SurveyInfo.keys[k_exp];
-		var values = [for (k in keys) len(groups.get(k))];
+		var vnames = config.vnames != null ? config.vnames : SurveyInfo.keys[config.col];
+		var values = [for (k in vnames) len(groups.get(k))];
 		Plt.figure();
 		Plt.subplot();
 		Plt.axes.call(aspect=>1);
 		Plt.title.call(
-			colQuestions[k_exp],
+			config.col_label != null ? config.col_label : colQuestions[config.col],
 			fontsize => "large"
 		);
 		Plt.pie.call(
 			values,
-			labels => [for (k in keys) {
-				var l = SurveyInfo.values[k_exp][k][0];
+			labels => [for (k in vnames) {
+				var l = if (SurveyInfo.values.exists(config.col))
+					SurveyInfo.values[config.col][k][0];
+				else
+					Std.string(k);
 				(Textwrap.wrap(l, 25):Array<String>).join("\n");
 			}],
 			labeldistance => 1.2,
 			autopct => make_autopct(values),
 			pctdistance => 0.7,
-			colors => expColors, //Sns.color_palette("muted", expKeys.length),
+			colors => (config.colors != null ? config.colors : Sns.color_palette("Set2", vnames.length)),
 			textprops => Lib.anonAsDict({
 				backgroundcolor: [1.0,1.0,1.0,0.9],
 			}),
@@ -51,19 +81,9 @@ class Analyzer {
 				edgecolor: [1.0,1.0,1.0],
 			})
 		);
-		// Plt.legend.call(
-		// 	labels => [for (k in keys) Main.values[k_exp][k][0]],
-		// 	loc => "best"
-		// );
 		Plt.tight_layout();
-		Plt.savefig.call("out/fig_exp.png");
-		Plt.savefig.call("out/fig_exp.svg");
-	}
-
-	static public function analyzeNumberOfTargets(data:DataFrame):Void {
-		var df = new DataFrame({
-			targetCount: [for (c in 1...SurveyInfo.values[k_target].count()+1) c]
-		});
+		Plt.savefig.call('out/fig_${config.col}.png');
+		Plt.savefig.call('out/fig_${config.col}.svg');
 	}
 
 	static public function analyzeMCQuestion(data:DataFrame, config:{

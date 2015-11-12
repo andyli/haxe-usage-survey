@@ -1,4 +1,4 @@
-@:enum abstract ColName(String) to String {
+@:enum abstract ColName(String) from String to String {
 	var k_time = "time";                  // Timestamp
 	var k_exp = "exp";                    // Do you use Haxe?
 	var k_create = "create";              // What are you creating, or want to use Haxe to create?
@@ -14,7 +14,7 @@
 	var k_email = "email";                // If you want to be notified when the survey result is ready, give me an email address
 }
 
-@:enum abstract Value(String) to String {
+@:enum abstract Value(String) from String to String {
 	var v_pro_main = "pro_main";
 	var v_pro_occ = "pro_occ";
 	var v_use = "use";

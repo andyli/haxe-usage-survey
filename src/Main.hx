@@ -28,6 +28,7 @@ class Main extends mcli.CommandLine {
 		Analyzer.analyzeOsMac(data);
 		Analyzer.analyzeOsLinux(data);
 		Analyzer.analyzeOsMobile(data);
+		Analyzer.analyzeTargetCount(data);
 	}
 
 	/**
