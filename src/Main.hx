@@ -30,6 +30,7 @@ class Main extends mcli.CommandLine {
 		Analyzer.analyzeOsLinux(data);
 		Analyzer.analyzeOsMobile(data);
 		Analyzer.analyzeTargetCount(data);
+		Analyzer.analyzeVersionCount(data);
 	}
 
 	/**

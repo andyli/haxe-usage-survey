@@ -37,10 +37,27 @@ class Analyzer {
 
 		analyzeSCQuestion(data, {
 			col: k_target_count_grouped,
-			col_label: "Number of interested targets per respondents",
+			col_label: "Number of interested targets per respondent",
 			vnames: ["1", "2", "3", "4", "5", "6", "7+"],
 			vlabels: ["1 target", "2 targets", "3 targets", "4 targets", "5 targets", "6 targets", "7 or more targets"],
 			colors: Sns.color_palette("Blues", 7)
+		});
+	}
+
+	static public function analyzeVersionCount(data:DataFrame):Void {
+		data = data.copy();
+		var k_version_count = k_version + "_count";
+		var k_version_count_grouped = k_version_count + "_grouped";
+		data.__setitem__(k_version_count_grouped, data.get(k_version_count).astype(str));
+		var maxNum = data.get(k_version_count).max();
+		data.at.__setitem__(python.Tuple.Tuple2.make(data.get(k_version_count) >= 3, k_version_count_grouped), "3+");
+
+		analyzeSCQuestion(data, {
+			col: k_version_count_grouped,
+			col_label: "Number of interested Haxe versions per respondent",
+			vnames: ["1", "2", "3+"],
+			vlabels: ["1 version", "2 versions", "3 or more versions"],
+			colors: Sns.color_palette("Oranges", 3)
 		});
 	}
 
