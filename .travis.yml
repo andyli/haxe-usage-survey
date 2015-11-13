@@ -21,4 +21,4 @@ before_install:
   - conda env create -f environment.yml
 
 before_script:
-  - source activate env
+  - source activate haxe-usage-survey
