@@ -249,7 +249,7 @@ class SurveyInfo {
 			v_freebsd    => ["FreeBSD"],
 			v_openbsd    => ["OpenBSD"],
 			v_netbsd     => ["NetBSD"],
-			v_mint       => ["Mint mate version", "Linux Mint", "Mint 17", "Mint", "mint"],
+			v_mint       => ["Linux Mint", "Mint mate version", "Mint 17", "Mint", "mint"],
 			v_elementary => ["elementary OS"],
 		],
 		k_os_mobile => [

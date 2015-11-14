@@ -262,8 +262,7 @@ class Analyzer {
 		analyzeMCQuestion(data.get(~data.get(k_os_win + "_" + v_no_win)), {
 			col: k_os_win,
 			vnames: vnames,
-			sub_col: k_exp,
-			xlabel: "Number of respondents who are interested in using Windows for Haxe development"
+			sub_col: k_exp
 		});
 	}
 
@@ -273,8 +272,7 @@ class Analyzer {
 		analyzeMCQuestion(data.get(~data.get(k_os_mac + "_" + v_no_mac)), {
 			col: k_os_mac,
 			vnames: vnames,
-			sub_col: k_exp,
-			xlabel: "Number of respondents who are interested in using Mac for Haxe development"
+			sub_col: k_exp
 		});
 	}
 
@@ -284,8 +282,7 @@ class Analyzer {
 		analyzeMCQuestion(data.get(~data.get(k_os_linux + "_" + v_no_linux)), {
 			col: k_os_linux,
 			vnames: vnames,
-			sub_col: k_exp,
-			xlabel: "Number of respondents who are interested in using Linux for Haxe development"
+			sub_col: k_exp
 		});
 	}
 
@@ -295,8 +292,7 @@ class Analyzer {
 		analyzeMCQuestion(data.get(~data.get(k_os_mobile + "_" + v_no_mobile)), {
 			col: k_os_mobile,
 			vnames: vnames,
-			sub_col: k_exp,
-			xlabel: "Number of respondents who are interested in using mobile OSes for Haxe development"
+			sub_col: k_exp
 		});
 	}
 }
