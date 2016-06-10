@@ -8,17 +8,20 @@ hxml:
   - build.hxml
 
 sudo: false
-addons:
-  apt:
-    packages:
-     - python-pip
 
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - git clone https://github.com/andyli/pyextern.git ../pyextern
-  - pip install --user conda
+  # install conda, see http://conda.pydata.org/docs/travis.html
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
   - conda env create -f environment.yml
+  - conda install -f libgfortran==1 # https://github.com/ContinuumIO/anaconda-issues/issues/686
 
 before_script:
   - source activate haxe-usage-survey
