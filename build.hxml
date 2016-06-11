@@ -1,7 +1,7 @@
 -main Main
 -cp src
 -cp ../pyextern/out
--lib mcli:0.1.4
+-lib mcli:0.1.6
 -python Main.py
 # -cmd python3 Main.py --load-raw responses.tsv > responses_process_log.txt
 -cmd python3 Main.py --load responses_processed.tsv --analyze
