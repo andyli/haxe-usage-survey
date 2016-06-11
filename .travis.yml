@@ -21,7 +21,6 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda env create -f environment.yml
-  - conda install -f libgfortran==1 # https://github.com/ContinuumIO/anaconda-issues/issues/686
 
 before_script:
   - source activate haxe-usage-survey
